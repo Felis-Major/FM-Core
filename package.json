@@ -1,0 +1,15 @@
+{
+  "name": "com.test.daniell",
+  "version": "1.0.0",
+  "displayName": "Daniell Core",
+  "description": "Core of the Daniell Unity Extension Package",
+  "unity": "2020.3",
+  "unityRelease": "0b5",
+  "dependencies": {
+ },
+  "author": {
+    "name": "Robert Edilber",
+    "email": "robert.edilber@pm.me",
+    "url": "https://github.com/robertedilber"
+  }
+}

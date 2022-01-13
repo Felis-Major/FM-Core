@@ -1,0 +1,18 @@
+{
+    "name": "Daniell-Core.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d1c4eec224ee7b24e82c3e2368f75fde"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
