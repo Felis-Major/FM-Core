@@ -8,8 +8,6 @@ namespace Daniell.Runtime.Systems.Events
     [DefaultExecutionOrder(-10000)]
     public abstract class EventReceiver : MonoBehaviour
     {
-#if UNITY_EDITOR
         public abstract ScriptableEvent Event { get; }
-#endif
     }
 }

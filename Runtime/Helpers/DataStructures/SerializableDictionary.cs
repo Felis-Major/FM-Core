@@ -26,6 +26,12 @@ namespace Daniell.Runtime.Helpers.DataStructures
         // Private fields
         private Dictionary<TKey, TValue> _internalDictionary;
 
+        public void Add(TKey key, TValue value)
+        {
+            var serializableData = new SerializableKeyValuePair<TKey, TValue>(key, value);
+            Add(serializableData);
+        }
+
         /// <summary>
         /// Update the internal dictionary manually.
         /// </summary>
