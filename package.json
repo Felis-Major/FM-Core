@@ -1,15 +1,15 @@
 {
-  "name": "com.test.daniellcore",
+  "name": "com.felismajor.daniellcore",
   "version": "1.0.0",
   "displayName": "Daniell Core",
-  "description": "Core of the Daniell Unity Extension Package",
+  "description": "Various Unity helpers and systems that can be used in most game projects",
   "unity": "2020.3",
   "unityRelease": "0b5",
   "dependencies": {
  },
   "author": {
-    "name": "Robert Edilber",
+    "name": "Felis Major",
     "email": "robert.edilber@pm.me",
-    "url": "https://github.com/robertedilber"
+    "url": "https://github.com/Felis-Major"
   }
 }
