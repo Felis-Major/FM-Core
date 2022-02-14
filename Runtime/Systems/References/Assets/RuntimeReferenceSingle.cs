@@ -17,6 +17,11 @@ namespace Daniell.Runtime.References
         /// </summary>
         public bool IsReady => _target != null;
 
+        /// <summary>
+        /// Reference target
+        /// </summary>
+        public GameObject Target => _target;
+
 
         /* ==========================
          * > Private Fields
