@@ -2,6 +2,9 @@
 
 namespace Daniell.Runtime.Systems.Events
 {
-    [CreateAssetMenu(fileName = "New Void Event", menuName = MENU_PATH_BASE + "Void")]
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    [CreateAssetMenu(fileName = "New Void Event", menuName = MENU_PATH_BASE + "C#/Void")]
     public class VoidEvent : ScriptableEvent { }
 }

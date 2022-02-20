@@ -2,6 +2,9 @@
 
 namespace Daniell.Runtime.Systems.Events
 {
-    [CreateAssetMenu(fileName = "New Bool Event", menuName = MENU_PATH_BASE + "Bool")]
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    [CreateAssetMenu(fileName = "New Bool Event", menuName = MENU_PATH_BASE + "C#/Bool")]
     public class BoolEvent : GenericScriptableEvent<bool> { }
 }

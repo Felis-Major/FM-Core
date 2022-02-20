@@ -10,6 +10,11 @@ namespace Daniell.Runtime.Systems.Events
     public abstract class GenericScriptableEvent<T> : ScriptableEvent
     {
         /// <summary>
+        /// Last value of the event
+        /// </summary>
+        public T LastValue { get; protected set; }
+
+        /// <summary>
         /// Internal event
         /// </summary>
         private event Action<T> OnEventRaised;
@@ -21,6 +26,11 @@ namespace Daniell.Runtime.Systems.Events
         public virtual void Raise(T value)
         {
             OnEventRaised?.Invoke(value);
+
+            // Set event to active and sustain
+            IsActive = true;
+            LastValue = value;
+            SustainEvent();
         }
 
         /// <summary>
@@ -39,6 +49,17 @@ namespace Daniell.Runtime.Systems.Events
         public void RemoveListener(Action<T> action)
         {
             OnEventRaised -= action;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        protected override void OnEventExpired()
+        {
+            base.OnEventExpired();
+
+            // Reset value
+            LastValue = default;
         }
     }
 }

@@ -9,6 +9,13 @@ namespace Daniell.Runtime.Systems.Events
     [DefaultExecutionOrder(ExecutionOrders.EVENT_SYSTEM)]
     public abstract class EventReceiver : MonoBehaviour
     {
+        /* ==========================
+         * > Properties
+         * -------------------------- */
+
+        /// <summary>
+        /// Event linked to this receiver
+        /// </summary>
         public abstract ScriptableEvent Event { get; }
     }
 }

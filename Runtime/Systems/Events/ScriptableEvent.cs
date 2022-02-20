@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Daniell.Runtime.Systems.Events
@@ -11,7 +12,12 @@ namespace Daniell.Runtime.Systems.Events
         /// <summary>
         /// Base menu path
         /// </summary>
-        public const string MENU_PATH_BASE = "Events/";
+        public const string MENU_PATH_BASE = "Daniell/Events/";
+
+        /// <summary>
+        /// Is this event active?
+        /// </summary>
+        public bool IsActive { get; protected set; }
 
         /// <summary>
         /// Internal Event
@@ -61,6 +67,10 @@ namespace Daniell.Runtime.Systems.Events
         public virtual void Raise()
         {
             OnEventRaised?.Invoke();
+
+            // Set event to active and sustain
+            IsActive = true;
+            SustainEvent();
         }
 
         /// <summary>
@@ -79,6 +89,23 @@ namespace Daniell.Runtime.Systems.Events
         public void RemoveListener(Action action)
         {
             OnEventRaised -= action;
+        }
+
+        /// <summary>
+        /// Maintain the event active until the whole frame is done
+        /// </summary>
+        protected async void SustainEvent()
+        {
+            await Task.Yield(); 
+            OnEventExpired();
+        }
+
+        /// <summary>
+        /// Called when the event has expired
+        /// </summary>
+        protected virtual void OnEventExpired()
+        {
+            IsActive = false;
         }
     }
 }

@@ -10,10 +10,24 @@ namespace Daniell.Runtime.Systems.Events
     /// <typeparam name="TEvent">Type of the event</typeparam>
     public class GenericEventReceiver<TValue, TEvent> : EventReceiver where TEvent : GenericScriptableEvent<TValue>
     {
+        /* ==========================
+         * > Data Structures
+         * -------------------------- */
+
         [System.Serializable]
         public class GenericUnityEvent : UnityEvent<TValue> { }
 
+
+        /* ==========================
+         * > Properties
+         * -------------------------- */
+
         public override ScriptableEvent Event => _event;
+
+
+        /* ==========================
+         * > Private Serialized Fields
+         * -------------------------- */
 
         [SerializeField]
         [Tooltip("Event linked to this receiver")]
@@ -28,9 +42,20 @@ namespace Daniell.Runtime.Systems.Events
         [Tooltip("Response called when the linked event is raised")]
         private GenericUnityEvent _response;
 
+
+        /* ==========================
+         * > Methods
+         * -------------------------- */
+
         protected virtual void OnEnable()
         {
             _event.AddListener(OnEventReceived);
+
+            // Check if the event is still active
+            if (_event.IsActive)
+            {
+                OnEventReceived(_event.LastValue);
+            }
         }
 
         protected virtual void OnDisable()
