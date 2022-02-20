@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Daniell.Runtime.Helpers.General;
+using UnityEngine;
 
 namespace Daniell.Runtime.Systems.Events
 {
