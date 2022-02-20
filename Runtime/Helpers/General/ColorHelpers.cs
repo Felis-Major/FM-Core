@@ -22,7 +22,7 @@ namespace Daniell.Runtime.Helpers.General
         /// </summary>
         /// <param name="color">Color to be converted to hex</param>
         /// <returns>Hex value of the color</returns>
-        public static string ToHex(this Color color)
+        public static string ToHex(this UnityEngine.Color color)
         {
             return ((Color32)color).ToHex();
         }

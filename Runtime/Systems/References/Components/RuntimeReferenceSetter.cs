@@ -7,7 +7,7 @@ namespace Daniell.Runtime.References
     /// <summary>
     /// Adds the GameObject this component is placed on to a given Runtime Group
     /// </summary>
-    [DefaultExecutionOrder(-10000)]
+    [DefaultExecutionOrder(ExecutionOrders.REFERENCE_SYSTEM)]
     public class RuntimeReferenceSetter : MonoBehaviour
     {
         /* ==========================
