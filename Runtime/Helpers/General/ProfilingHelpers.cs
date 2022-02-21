@@ -14,8 +14,23 @@ namespace Daniell.Runtime.Helpers.General
         /// <returns>Info about the caller of this method</returns>
         public static MethodBase GetCallerInfo()
         {
-            var stackTrace = new StackTrace().GetFrame(3);
-            return stackTrace.GetMethod();
+            MethodBase callerID = null;
+
+            for (int i = 0; i < 3; i++)
+            {
+                var stackFrame = new StackTrace().GetFrame(i);
+
+                if (stackFrame != null)
+                {
+                    callerID = stackFrame.GetMethod();
+                }
+                else
+                {
+                    return callerID;
+                }
+            }
+
+            return callerID;
         }
     }
 }

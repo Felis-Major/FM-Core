@@ -34,7 +34,7 @@ namespace Daniell.Runtime.Systems.Save
 
 
         /* ==========================
-         * > Serialized Fields
+         * > Private Serialized Fields
          * -------------------------- */
 
         [SerializeField]
@@ -72,12 +72,12 @@ namespace Daniell.Runtime.Systems.Save
                 _saveDataContainers.Add(target.GUID, new SaveDataContainer(target.GUID));
             }
 
-            SaveManager.Register(this);
+            GameDataHandler.Register(this);
         }
 
         private void OnDestroy()
         {
-            SaveManager.Unregister(this);
+            GameDataHandler.Unregister(this);
         }
 
         #endregion
@@ -99,7 +99,7 @@ namespace Daniell.Runtime.Systems.Save
         }
 
         /// <summary>
-        /// Load all Saveable objects from their containers
+        /// Load all Saveable objects from save data containers
         /// </summary>
         public void Load(SaveDataContainer[] saveDataContainers)
         {

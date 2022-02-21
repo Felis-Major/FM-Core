@@ -80,12 +80,12 @@ namespace Daniell.Runtime.Helpers.Logging
             switch (logType)
             {
                 case LogType.Important:
-                    messagePrefix = "<b><size=13>";
-                    messageSuffix= "</size></b>";
+                    messagePrefix = "<b>";
+                    messageSuffix= "</b>";
                     break;
                 case LogType.Discrete:
-                    messagePrefix = "<i><size=11>";
-                    messageSuffix = "</size></i>";
+                    messagePrefix = "<i>";
+                    messageSuffix = "</i>";
                     break;
             }
 
