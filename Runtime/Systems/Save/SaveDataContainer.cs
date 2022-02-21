@@ -78,14 +78,10 @@ namespace Daniell.Runtime.Systems.Save
             }
 
             // Convert the data to a json string
-            var dataAsJson = JsonUtility.ToJson(new ValueWrapper<T>(data));
-
-            // Encode data
-            var dataEncoder = new SymetricEncoder(_targetGUID);
-            var encodedData = dataEncoder.EncodeString(dataAsJson);
+            var dataAsJson = JsonUtility.ToJson(new ValueWrapper<T>(data), true);
 
             // Store it in a new container
-            var saveData = new SaveData(key, encodedData);
+            var saveData = new SaveData(key, dataAsJson);
 
             // Add the data to the serialized list of data
             _data.Add(saveData);
@@ -101,9 +97,7 @@ namespace Daniell.Runtime.Systems.Save
         {
             if (Contains(key, out int index))
             {
-                var dataEncoder = new SymetricEncoder(_targetGUID);
-                var json = dataEncoder.DecodeString(_data[index].data);
-                ValueWrapper<T> data = JsonUtility.FromJson<ValueWrapper<T>>(json);
+                ValueWrapper<T> data = JsonUtility.FromJson<ValueWrapper<T>>(_data[index].data);
                 return data.value;
             }
 
