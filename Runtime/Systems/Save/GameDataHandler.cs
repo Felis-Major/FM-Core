@@ -6,10 +6,6 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace Daniell.Runtime.Systems.Save
 {
     /// <summary>
@@ -200,7 +196,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Type of file that will be saved
         /// </summary>
-        public static FileHandler.FileType FileHandlerType { get; set; } = FileHandler.FileType.Binary;
+        public static FileHandler.FileType FileHandlerType { get; set; } = FileHandler.FileType.Json;
 
 
         /* ==========================
@@ -362,6 +358,60 @@ namespace Daniell.Runtime.Systems.Save
             }
         }
 
+        /// <summary>
+        /// Save Temp data to Permanent save file
+        /// </summary>
+        public static void MakeTemporaryDataPermanent()
+        {
+            var tempFiles = GetSaveFiles(DataPersistency.Temporary);
+
+            // For each temp file
+            for (int i = 0; i < tempFiles.Count; i++)
+            {
+                var tempFileName = tempFiles[i];
+                var permanentFileName = tempFileName.Replace($".{TEMPORARY_FILE_EXTENSION}", $".{PERMANENT_FILE_EXTENSION}");
+
+                if (File.Exists(permanentFileName))
+                {
+                    var tempFileHandler = new FileHandler(tempFileName, FileHandlerType);
+                    var tempFileData = tempFileHandler.Read<List<DataSaverInfo>>();
+
+                    var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
+                    var permanentFileData = permanentFileHandler.Read<List<DataSaverInfo>>();
+
+                    // Remove matching data from permanent file
+                    for (int j = 0; j < tempFileData.Count; j++)
+                    {
+                        var tempData = tempFileData[j];
+                        permanentFileData.RemoveAll(x => x.GUID == tempData.GUID);
+                        tempFileData.AddRange(permanentFileData);
+                        permanentFileHandler.Write(tempFileData);
+                    }
+                }
+                else
+                {
+                    // Change the file extension if the file doesn't exist
+                    File.Move(tempFileName, permanentFileName);
+                }
+            }
+
+            FlushTempData();
+        }
+
+        /// <summary>
+        /// Remove all temp data from save folder
+        /// </summary>
+        public static void FlushTempData()
+        {
+            var tempFiles = GetSaveFiles(DataPersistency.Temporary);
+
+            // Remove all files from directory
+            for (int i = 0; i < tempFiles.Count; i++)
+            {
+                File.Delete(tempFiles[i]);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -387,62 +437,26 @@ namespace Daniell.Runtime.Systems.Save
             return $"{name}.{extension}";
         }
 
-#if UNITY_EDITOR
-
         /// <summary>
-        /// Save Game Data in permanent file
+        /// Get save files for persistency type
         /// </summary>
-        [MenuItem("Daniell/Save System/Save/Permanent")]
-        public static void SavePermanent()
+        /// <param name="dataPersistency">Persistency of the data</param>
+        /// <returns>List of files matching the data persistency</returns>
+        private static List<string> GetSaveFiles(DataPersistency dataPersistency)
         {
-            Save(DataPersistency.Permanent);
-        }
+            // Load all temp data files
+            var files = new List<string>();
+            var targetExtension = dataPersistency == DataPersistency.Temporary ? TEMPORARY_FILE_EXTENSION : PERMANENT_FILE_EXTENSION;
 
-        /// <summary>
-        /// Save Game Data in temporary file
-        /// </summary>
-        [MenuItem("Daniell/Save System/Save/Temporary")]
-        public static void SaveTemporary()
-        {
-            Save(DataPersistency.Temporary);
-        }
-
-        /// <summary>
-        /// Load Game Data from permanent file
-        /// </summary>
-        [MenuItem("Daniell/Save System/Load/Permanent")]
-        public static void LoadPermanent()
-        {
-            Load(DataPersistency.Permanent);
-        }
-
-        /// <summary>
-        /// Load Game Data from temporary file
-        /// </summary>
-        [MenuItem("Daniell/Save System/Load/Temporary")]
-        public static void LoadTemporary()
-        {
-            Load(DataPersistency.Temporary);
-        }
-
-        [MenuItem("Daniell/Save System/Open Save Data Folder...")]
-        public static void OpenSaveDataFolder()
-        {
-            string path = BaseSaveDataPath;
-            path = path.Replace(@"/", @"\");
-            System.Diagnostics.Process.Start("explorer.exe", path);
-        }
-
-        [MenuItem("Daniell/Save System/Clear Save Data Folder")]
-        public static void ClearData()
-        {
-            var directory = BaseSaveDataPath;
-            if (Directory.Exists(directory))
+            foreach (var file in Directory.EnumerateFiles(WorkingDirectory))
             {
-                Directory.Delete(directory, true);
-                ConsoleLogger.Log("Game Data erased", Color.red, ConsoleLogger.LogType.Important);
+                if (file.Contains($".{targetExtension}"))
+                {
+                    files.Add(file);
+                }
             }
+
+            return files;
         }
-#endif
     }
 }
