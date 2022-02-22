@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -206,6 +207,7 @@ namespace Daniell.Runtime.Systems.Save
 
         private static string _activeSlot;
         private static List<DataSaver> _registeredDataSavers = new List<DataSaver>();
+        private static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
 
         /* ==========================
@@ -274,32 +276,29 @@ namespace Daniell.Runtime.Systems.Save
                 var filePath = Path.Combine(WorkingDirectory, GetFullFileName(sceneID.ToString(), dataPersistency));
                 var fileHandler = new FileHandler(filePath, FileHandlerType);
 
-                // Read & Write file on a new thread
-                await Task.Run(() =>
+                // If there is already data, replace only what has changed
+                if (File.Exists(filePath))
                 {
-                    // If there is already data, replace only what has changed
-                    if (File.Exists(filePath))
+                    // Read file at SceneID path
+                    var loadedDataSavers = await fileHandler.Read<List<DataSaverInfo>>();
+                    var loadedGUIDs = dataToSave.ConvertAll(x => x.GUID);
+
+                    // Add all data that doesn't have a loaded GUID
+                    for (int j = 0; j < loadedDataSavers.Count; j++)
                     {
-                        // Read file at SceneID path
-                        var loadedDataSavers = fileHandler.Read<List<DataSaverInfo>>();
-                        var loadedGUIDs = dataToSave.ConvertAll(x => x.GUID);
+                        var loadedDataSaver = loadedDataSavers[i];
 
-                        // Add all data that doesn't have a loaded GUID
-                        for (int j = 0; j < loadedDataSavers.Count; j++)
+                        if (!loadedGUIDs.Contains(loadedDataSaver.GUID))
                         {
-                            var loadedDataSaver = loadedDataSavers[i];
-
-                            if (!loadedGUIDs.Contains(loadedDataSaver.GUID))
-                            {
-                                dataToSave.Add(loadedDataSaver);
-                            }
+                            dataToSave.Add(loadedDataSaver);
                         }
                     }
+                }
 
-                    // Write the modified data to the file
-                    fileHandler.Write(dataToSave);
-                    ConsoleLogger.Log($"Saved Scene {sceneID} \n File Path: {filePath}", Color.green, ConsoleLogger.LogType.Important);
-                });
+                // Write the modified data to the file
+                await fileHandler.Write(dataToSave);
+
+                ConsoleLogger.Log($"Saved Scene {sceneID} \n File Path: {filePath}", Color.green, ConsoleLogger.LogType.Important);
             }
         }
 
@@ -332,36 +331,33 @@ namespace Daniell.Runtime.Systems.Save
                 var filePath = Path.Combine(WorkingDirectory, GetFullFileName(sceneID.ToString(), dataPersistency));
                 var fileHandler = new FileHandler(filePath, FileHandlerType);
 
-                await Task.Run(() =>
+                // If a save file exists, load data
+                if (File.Exists(filePath))
                 {
-                    // If a save file exists, load data
-                    if (File.Exists(filePath))
+                    var loadedDataSavers = await fileHandler.Read<List<DataSaverInfo>>();
+
+                    // Load data for each Data Saver
+                    for (int j = 0; j < registeredDataSavers.Count; j++)
                     {
-                        var loadedDataSavers = fileHandler.Read<List<DataSaverInfo>>();
-
-                        // Load data for each Data Saver
-                        for (int j = 0; j < registeredDataSavers.Count; j++)
+                        var registeredDataSaver = registeredDataSavers[j];
+                        for (int k = 0; k < loadedDataSavers.Count; k++)
                         {
-                            var registeredDataSaver = registeredDataSavers[j];
-                            for (int k = 0; k < loadedDataSavers.Count; k++)
-                            {
-                                var loadedData = loadedDataSavers[k];
+                            var loadedData = loadedDataSavers[k];
 
-                                // If the same GUID was found, load the Data Saver
-                                if (loadedData.GUID == registeredDataSaver.GUID)
-                                {
-                                    registeredDataSaver.Load(loadedData.SaveDataContainers);
-                                }
+                            // If the same GUID was found, load the Data Saver
+                            if (loadedData.GUID == registeredDataSaver.GUID)
+                            {
+                                registeredDataSaver.Load(loadedData.SaveDataContainers);
                             }
                         }
+                    }
 
-                        ConsoleLogger.Log($"Scene {sceneID} loaded", Color.green, ConsoleLogger.LogType.Important);
-                    }
-                    else
-                    {
-                        ConsoleLogger.Log($"No data found for Scene {sceneID}", Color.yellow, ConsoleLogger.LogType.Important);
-                    }
-                });
+                    ConsoleLogger.Log($"Scene {sceneID} loaded", Color.green, ConsoleLogger.LogType.Important);
+                }
+                else
+                {
+                    ConsoleLogger.Log($"No data found for Scene {sceneID}", Color.yellow, ConsoleLogger.LogType.Important);
+                }
             }
         }
 
@@ -370,7 +366,7 @@ namespace Daniell.Runtime.Systems.Save
         /// </summary>
         public async static void MakeTemporaryDataPermanent()
         {
-            var tempFiles = await Task.Run(() => GetSaveFiles(DataPersistency.Temporary));
+            var tempFiles = await GetSaveFiles(DataPersistency.Temporary);
 
             // For each temp file
             for (int i = 0; i < tempFiles.Count; i++)
@@ -380,17 +376,11 @@ namespace Daniell.Runtime.Systems.Save
 
                 if (File.Exists(permanentFileName))
                 {
-                    List<DataSaverInfo> tempFileData = new List<DataSaverInfo>();
-                    List<DataSaverInfo> permanentFileData = new List<DataSaverInfo>();
+                    var tempFileHandler = new FileHandler(tempFileName, FileHandlerType);
+                    var tempFileData = await tempFileHandler.Read<List<DataSaverInfo>>();
 
-                    await Task.Run(() =>
-                    {
-                        var tempFileHandler = new FileHandler(tempFileName, FileHandlerType);
-                        tempFileData = tempFileHandler.Read<List<DataSaverInfo>>();
-
-                        var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
-                        permanentFileData = permanentFileHandler.Read<List<DataSaverInfo>>();
-                    });
+                    var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
+                    var permanentFileData = await permanentFileHandler.Read<List<DataSaverInfo>>();
 
                     // Remove matching data from permanent file
                     for (int j = 0; j < tempFileData.Count; j++)
@@ -399,11 +389,7 @@ namespace Daniell.Runtime.Systems.Save
                         permanentFileData.RemoveAll(x => x.GUID == tempData.GUID);
                         tempFileData.AddRange(permanentFileData);
 
-                        await Task.Run(() =>
-                        {
-                            var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
-                            permanentFileHandler.Write(tempFileData);
-                        });
+                        await permanentFileHandler.Write(tempFileData);
                     }
                 }
                 else
@@ -421,7 +407,7 @@ namespace Daniell.Runtime.Systems.Save
         /// </summary>
         public async static void FlushTempData()
         {
-            var tempFiles = await Task.Run(() => GetSaveFiles(DataPersistency.Temporary));
+            var tempFiles = await GetSaveFiles(DataPersistency.Temporary);
 
             await Task.Run(() =>
             {
@@ -463,19 +449,22 @@ namespace Daniell.Runtime.Systems.Save
         /// </summary>
         /// <param name="dataPersistency">Persistency of the data</param>
         /// <returns>List of files matching the data persistency</returns>
-        private static List<string> GetSaveFiles(DataPersistency dataPersistency)
+        private async static Task<List<string>> GetSaveFiles(DataPersistency dataPersistency)
         {
             // Load all temp data files
             var files = new List<string>();
             var targetExtension = dataPersistency == DataPersistency.Temporary ? TEMPORARY_FILE_EXTENSION : PERMANENT_FILE_EXTENSION;
 
-            foreach (var file in Directory.EnumerateFiles(WorkingDirectory))
+            await Task.Run(() =>
             {
-                if (file.Contains($".{targetExtension}"))
+                foreach (var file in Directory.EnumerateFiles(WorkingDirectory))
                 {
-                    files.Add(file);
+                    if (file.Contains($".{targetExtension}"))
+                    {
+                        files.Add(file);
+                    }
                 }
-            }
+            });
 
             return files;
         }

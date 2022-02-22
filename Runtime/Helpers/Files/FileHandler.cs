@@ -2,6 +2,8 @@
 using Daniell.Runtime.Helpers.Logging;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Daniell.Runtime.Helpers.Files
@@ -65,43 +67,46 @@ namespace Daniell.Runtime.Helpers.Files
         /// </summary>
         /// <typeparam name="T">Data to be written</typeparam>
         /// <param name="data">Data Type</param>
-        public void Write<T>(T data)
+        public async Task Write<T>(T data)
         {
             // Create directory if it doesn't exist
             var dir = Path.GetDirectoryName(_filePath);
 
-            if (!Directory.Exists(dir))
+            await Task.Run(() =>
             {
-                Directory.CreateDirectory(dir);
-            }
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
 
-            // Write data to file
-            switch (_fileType)
-            {
-                // Write file as text
-                case FileType.Text:
-                    File.WriteAllText(_filePath, data.ToString());
-                    break;
+                // Write data to file
+                switch (_fileType)
+                {
+                    // Write file as text
+                    case FileType.Text:
+                        File.WriteAllText(_filePath, data.ToString());
+                        break;
 
-                // Write file as Json
-                case FileType.Json:
-                    var jsonData = JsonUtility.ToJson(new ValueWrapper<T>(data), true);
-                    File.WriteAllText(_filePath, jsonData);
-                    break;
+                    // Write file as Json
+                    case FileType.Json:
+                        var jsonData = JsonUtility.ToJson(new ValueWrapper<T>(data), true);
+                        File.WriteAllText(_filePath, jsonData);
+                        break;
 
-                // Write file as Binary
-                case FileType.Binary:
-                    // Create the file
-                    FileStream stream = new FileStream(_filePath, FileMode.Create);
+                    // Write file as Binary
+                    case FileType.Binary:
+                        // Create the file
+                        FileStream stream = new FileStream(_filePath, FileMode.Create);
 
-                    // Serialize Data and save to file
-                    BinaryFormatter binaryFormatter = new BinaryFormatter();
-                    binaryFormatter.Serialize(stream, new ValueWrapper<T>(data));
+                        // Serialize Data and save to file
+                        BinaryFormatter binaryFormatter = new BinaryFormatter();
+                        binaryFormatter.Serialize(stream, new ValueWrapper<T>(data));
 
-                    // Close the file stream
-                    stream.Close();
-                    break;
-            }
+                        // Close the file stream
+                        stream.Close();
+                        break;
+                }
+            });
         }
 
         /// <summary>
@@ -109,7 +114,7 @@ namespace Daniell.Runtime.Helpers.Files
         /// </summary>
         /// <typeparam name="T">Data Type</typeparam>
         /// <returns>Data as T</returns>
-        public T Read<T>()
+        public async Task<T> Read<T>()
         {
             // Throw an exception if the file doesn't exist
             if (!File.Exists(_filePath))
@@ -117,29 +122,34 @@ namespace Daniell.Runtime.Helpers.Files
                 throw new System.Exception($"File {_filePath} doesn't exist");
             }
 
-            // Read data from file
-            switch (_fileType)
+            await Task.Run(() =>
             {
-                case FileType.Text:
-                    return (T)(object)File.ReadAllText(_filePath);
+                // Read data from file
+                switch (_fileType)
+                {
+                    case FileType.Text:
+                        return (T)(object)File.ReadAllText(_filePath);
 
-                case FileType.Json:
-                    string json = File.ReadAllText(_filePath);
-                    return JsonUtility.FromJson<ValueWrapper<T>>(json).value;
+                    case FileType.Json:
+                        string json = File.ReadAllText(_filePath);
+                        return JsonUtility.FromJson<ValueWrapper<T>>(json).value;
 
-                case FileType.Binary:
-                    // Open the file
-                    FileStream stream = new FileStream(_filePath, FileMode.Open);
+                    case FileType.Binary:
+                        // Open the file
+                        FileStream stream = new FileStream(_filePath, FileMode.Open);
 
-                    // Deserialize data
-                    BinaryFormatter binaryFormatter = new BinaryFormatter();
-                    var serializedData = (ValueWrapper<T>)binaryFormatter.Deserialize(stream);
-                    stream.Close();
+                        // Deserialize data
+                        BinaryFormatter binaryFormatter = new BinaryFormatter();
+                        var serializedData = (ValueWrapper<T>)binaryFormatter.Deserialize(stream);
+                        stream.Close();
 
-                    return serializedData.value;
-            }
+                        return serializedData.value;
+                }
 
-            // Return default if a case wasn't handled
+                // Return default if a case wasn't handled
+                return default;
+            });
+
             return default;
         }
     }
