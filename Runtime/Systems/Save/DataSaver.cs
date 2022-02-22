@@ -51,7 +51,7 @@ namespace Daniell.Runtime.Systems.Save
          * -------------------------- */
 
         private List<ISaveable> _saveables = new List<ISaveable>();
-        private Dictionary<string, SaveDataContainer> _saveDataContainers = new Dictionary<string, SaveDataContainer>();
+        private Dictionary<int, SaveDataContainer> _saveDataContainers = new Dictionary<int, SaveDataContainer>();
 
 
         /* ==========================
@@ -69,7 +69,7 @@ namespace Daniell.Runtime.Systems.Save
             {
                 ISaveable target = saveTargets[i];
                 _saveables.Add(target);
-                _saveDataContainers.Add(target.GUID, new SaveDataContainer(target.GUID));
+                _saveDataContainers.Add(i, new SaveDataContainer(i));
             }
 
             GameDataHandler.Register(this);
@@ -92,7 +92,7 @@ namespace Daniell.Runtime.Systems.Save
             for (int i = 0; i < _saveables.Count; i++)
             {
                 ISaveable saveable = _saveables[i];
-                saveable.Save(_saveDataContainers[saveable.GUID]);
+                saveable.Save(_saveDataContainers[i]);
             }
 
             return _saveDataContainers.Values.ToArray();
@@ -106,13 +106,13 @@ namespace Daniell.Runtime.Systems.Save
             for (int i = 0; i < saveDataContainers.Length; i++)
             {
                 SaveDataContainer container = saveDataContainers[i];
-                _saveDataContainers[container.TargetGUID] = container;
+                _saveDataContainers[container.Order] = container;
             }
 
             for (int i = 0; i < _saveables.Count; i++)
             {
                 ISaveable saveable = _saveables[i];
-                saveable.Load(_saveDataContainers[saveable.GUID]);
+                saveable.Load(_saveDataContainers[i]);
             }
         }
 
