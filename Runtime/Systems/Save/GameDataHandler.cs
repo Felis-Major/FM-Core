@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Daniell.Runtime.Systems.Save
@@ -239,7 +240,7 @@ namespace Daniell.Runtime.Systems.Save
         /// Save all loaded game data
         /// </summary>
         /// <param name="dataPersistency">Persistency of the data</param>
-        public static void Save(DataPersistency dataPersistency)
+        public async static void Save(DataPersistency dataPersistency)
         {
             // Do not execute if there is no data saver to save from
             if (_registeredDataSavers.Count == 0)
@@ -256,7 +257,6 @@ namespace Daniell.Runtime.Systems.Save
             for (int i = 0; i < activeSceneIDs.Count; i++)
             {
                 var sceneID = activeSceneIDs[i];
-
                 // Find registered data for this scene ID and convert to containers
                 var registeredData = _registeredDataSavers
                     .Where(x => x.SceneID == sceneID)
@@ -274,28 +274,32 @@ namespace Daniell.Runtime.Systems.Save
                 var filePath = Path.Combine(WorkingDirectory, GetFullFileName(sceneID.ToString(), dataPersistency));
                 var fileHandler = new FileHandler(filePath, FileHandlerType);
 
-                // If there is already data, replace only what has changed
-                if (File.Exists(filePath))
+                // Read & Write file on a new thread
+                await Task.Run(() =>
                 {
-                    // Read file at SceneID path
-                    var loadedDataSavers = fileHandler.Read<List<DataSaverInfo>>();
-                    var loadedGUIDs = dataToSave.ConvertAll(x => x.GUID);
-
-                    // Add all data that doesn't have a loaded GUID
-                    for (int j = 0; j < loadedDataSavers.Count; j++)
+                    // If there is already data, replace only what has changed
+                    if (File.Exists(filePath))
                     {
-                        var loadedDataSaver = loadedDataSavers[i];
+                        // Read file at SceneID path
+                        var loadedDataSavers = fileHandler.Read<List<DataSaverInfo>>();
+                        var loadedGUIDs = dataToSave.ConvertAll(x => x.GUID);
 
-                        if (!loadedGUIDs.Contains(loadedDataSaver.GUID))
+                        // Add all data that doesn't have a loaded GUID
+                        for (int j = 0; j < loadedDataSavers.Count; j++)
                         {
-                            dataToSave.Add(loadedDataSaver);
+                            var loadedDataSaver = loadedDataSavers[i];
+
+                            if (!loadedGUIDs.Contains(loadedDataSaver.GUID))
+                            {
+                                dataToSave.Add(loadedDataSaver);
+                            }
                         }
                     }
-                }
 
-                // Write the modified data to the file
-                fileHandler.Write(dataToSave);
-                ConsoleLogger.Log($"Saved Scene {sceneID} \n File Path: {filePath}", Color.green, ConsoleLogger.LogType.Important);
+                    // Write the modified data to the file
+                    fileHandler.Write(dataToSave);
+                    ConsoleLogger.Log($"Saved Scene {sceneID} \n File Path: {filePath}", Color.green, ConsoleLogger.LogType.Important);
+                });
             }
         }
 
@@ -303,7 +307,7 @@ namespace Daniell.Runtime.Systems.Save
         /// Load all saved game data
         /// </summary>
         /// <param name="dataPersistency">Persistency of the data</param>
-        public static void Load(DataPersistency dataPersistency)
+        public async static void Load(DataPersistency dataPersistency)
         {
             // Do not execute if there is no data saver to load to
             if (_registeredDataSavers.Count == 0)
@@ -328,42 +332,45 @@ namespace Daniell.Runtime.Systems.Save
                 var filePath = Path.Combine(WorkingDirectory, GetFullFileName(sceneID.ToString(), dataPersistency));
                 var fileHandler = new FileHandler(filePath, FileHandlerType);
 
-                // If a save file exists, load data
-                if (File.Exists(filePath))
+                await Task.Run(() =>
                 {
-                    var loadedDataSavers = fileHandler.Read<List<DataSaverInfo>>();
-
-                    // Load data for each Data Saver
-                    for (int j = 0; j < registeredDataSavers.Count; j++)
+                    // If a save file exists, load data
+                    if (File.Exists(filePath))
                     {
-                        var registeredDataSaver = registeredDataSavers[j];
-                        for (int k = 0; k < loadedDataSavers.Count; k++)
-                        {
-                            var loadedData = loadedDataSavers[k];
+                        var loadedDataSavers = fileHandler.Read<List<DataSaverInfo>>();
 
-                            // If the same GUID was found, load the Data Saver
-                            if (loadedData.GUID == registeredDataSaver.GUID)
+                        // Load data for each Data Saver
+                        for (int j = 0; j < registeredDataSavers.Count; j++)
+                        {
+                            var registeredDataSaver = registeredDataSavers[j];
+                            for (int k = 0; k < loadedDataSavers.Count; k++)
                             {
-                                registeredDataSaver.Load(loadedData.SaveDataContainers);
+                                var loadedData = loadedDataSavers[k];
+
+                                // If the same GUID was found, load the Data Saver
+                                if (loadedData.GUID == registeredDataSaver.GUID)
+                                {
+                                    registeredDataSaver.Load(loadedData.SaveDataContainers);
+                                }
                             }
                         }
-                    }
 
-                    ConsoleLogger.Log($"Scene {sceneID} loaded", Color.green, ConsoleLogger.LogType.Important);
-                }
-                else
-                {
-                    ConsoleLogger.Log($"No data found for Scene {sceneID}", Color.yellow, ConsoleLogger.LogType.Important);
-                }
+                        ConsoleLogger.Log($"Scene {sceneID} loaded", Color.green, ConsoleLogger.LogType.Important);
+                    }
+                    else
+                    {
+                        ConsoleLogger.Log($"No data found for Scene {sceneID}", Color.yellow, ConsoleLogger.LogType.Important);
+                    }
+                });
             }
         }
 
         /// <summary>
         /// Save Temp data to Permanent save file
         /// </summary>
-        public static void MakeTemporaryDataPermanent()
+        public async static void MakeTemporaryDataPermanent()
         {
-            var tempFiles = GetSaveFiles(DataPersistency.Temporary);
+            var tempFiles = await Task.Run(() => GetSaveFiles(DataPersistency.Temporary));
 
             // For each temp file
             for (int i = 0; i < tempFiles.Count; i++)
@@ -373,11 +380,17 @@ namespace Daniell.Runtime.Systems.Save
 
                 if (File.Exists(permanentFileName))
                 {
-                    var tempFileHandler = new FileHandler(tempFileName, FileHandlerType);
-                    var tempFileData = tempFileHandler.Read<List<DataSaverInfo>>();
+                    List<DataSaverInfo> tempFileData = new List<DataSaverInfo>();
+                    List<DataSaverInfo> permanentFileData = new List<DataSaverInfo>();
 
-                    var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
-                    var permanentFileData = permanentFileHandler.Read<List<DataSaverInfo>>();
+                    await Task.Run(() =>
+                    {
+                        var tempFileHandler = new FileHandler(tempFileName, FileHandlerType);
+                        tempFileData = tempFileHandler.Read<List<DataSaverInfo>>();
+
+                        var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
+                        permanentFileData = permanentFileHandler.Read<List<DataSaverInfo>>();
+                    });
 
                     // Remove matching data from permanent file
                     for (int j = 0; j < tempFileData.Count; j++)
@@ -385,13 +398,18 @@ namespace Daniell.Runtime.Systems.Save
                         var tempData = tempFileData[j];
                         permanentFileData.RemoveAll(x => x.GUID == tempData.GUID);
                         tempFileData.AddRange(permanentFileData);
-                        permanentFileHandler.Write(tempFileData);
+
+                        await Task.Run(() =>
+                        {
+                            var permanentFileHandler = new FileHandler(permanentFileName, FileHandlerType);
+                            permanentFileHandler.Write(tempFileData);
+                        });
                     }
                 }
                 else
                 {
                     // Change the file extension if the file doesn't exist
-                    File.Move(tempFileName, permanentFileName);
+                    await Task.Run(() => File.Move(tempFileName, permanentFileName));
                 }
             }
 
@@ -401,15 +419,18 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Remove all temp data from save folder
         /// </summary>
-        public static void FlushTempData()
+        public async static void FlushTempData()
         {
-            var tempFiles = GetSaveFiles(DataPersistency.Temporary);
+            var tempFiles = await Task.Run(() => GetSaveFiles(DataPersistency.Temporary));
 
-            // Remove all files from directory
-            for (int i = 0; i < tempFiles.Count; i++)
+            await Task.Run(() =>
             {
-                File.Delete(tempFiles[i]);
-            }
+                // Remove all files from directory
+                for (int i = 0; i < tempFiles.Count; i++)
+                {
+                    File.Delete(tempFiles[i]);
+                }
+            });
         }
 
         #endregion
