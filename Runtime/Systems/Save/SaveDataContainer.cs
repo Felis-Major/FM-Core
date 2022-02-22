@@ -38,7 +38,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// GUID of the target of this data container
         /// </summary>
-        public string TargetGUID => _targetGUID;
+        public int Order => _order;
 
 
         /* ==========================
@@ -46,7 +46,7 @@ namespace Daniell.Runtime.Systems.Save
          * -------------------------- */
 
         [SerializeField]
-        private string _targetGUID;
+        private int _order;
 
         [SerializeField]
         private List<SaveData> _data = new List<SaveData>();
@@ -56,11 +56,11 @@ namespace Daniell.Runtime.Systems.Save
          * > Methods
          * -------------------------- */
 
-        public SaveDataContainer() : this("undefined") { }
+        public SaveDataContainer() : this(-1) { }
 
-        public SaveDataContainer(string targetGUID)
+        public SaveDataContainer(int order)
         {
-            _targetGUID = targetGUID;
+            _order = order;
         }
 
         /// <summary>

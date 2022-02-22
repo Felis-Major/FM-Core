@@ -6,11 +6,6 @@
     public interface ISaveable
     {
         /// <summary>
-        /// Unique ID for this object
-        /// </summary>
-        string GUID { get; }
-
-        /// <summary>
         /// Load currently saved data
         /// </summary>
         /// <param name="saveDataContainer">Container for the data</param>
