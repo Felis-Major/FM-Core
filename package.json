@@ -1,6 +1,6 @@
 {
   "name": "com.felismajor.daniellcore",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "displayName": "Daniell Core",
   "description": "Various Unity helpers and systems that can be used in most game projects",
   "unity": "2020.3",
