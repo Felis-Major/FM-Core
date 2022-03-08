@@ -178,7 +178,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// File extension for game settings
         /// </summary>
-        public const string SETTINGS_FILE_EXTENSION = "config";
+        public const string SETTINGS_FILE_EXTENSION = "json";
 
 
         /* ==========================
@@ -202,7 +202,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Path to game settings
         /// </summary>
-        public static string SettingsDataPath => Path.Combine(BaseSaveDataPath, GAME_SETTINGS_DIRECTORY);
+        public static string SettingsDataPath => Path.Combine(BaseSaveDataPath, $"{GAME_SETTINGS_DIRECTORY}.{SETTINGS_FILE_EXTENSION}");
 
         /// <summary>
         /// Directory where the game files should be stored
