@@ -1,8 +1,5 @@
-﻿using Daniell.Runtime.Helpers.Logging;
-using Daniell.Runtime.Systems.Save;
-using System.IO;
+﻿using Daniell.Runtime.Systems.Save;
 using UnityEditor;
-using UnityEngine;
 
 namespace Daniell.Editor.Systems.Save
 {
@@ -15,54 +12,54 @@ namespace Daniell.Editor.Systems.Save
         /// Save Game Data in permanent file (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Save/Permanent")]
-        public static void SavePermanent()
+        public static async void SavePermanent()
         {
-            GameDataHandler.Save(GameDataHandler.DataPersistency.Permanent);
+            await GameDataHandler.Save(GameDataHandler.DataPersistency.Permanent);
         }
 
         /// <summary>
         /// Save Game Data in temporary file (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Save/Temporary")]
-        public static void SaveTemporary()
+        public static async void SaveTemporary()
         {
-            GameDataHandler.Save(GameDataHandler.DataPersistency.Temporary);
+            await GameDataHandler.Save(GameDataHandler.DataPersistency.Temporary);
         }
 
         /// <summary>
         /// Load Game Data from permanent file (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Load/Permanent")]
-        public static void LoadPermanent()
+        public static async void LoadPermanent()
         {
-            GameDataHandler.Load(GameDataHandler.DataPersistency.Permanent);
+            await GameDataHandler.Load(GameDataHandler.DataPersistency.Permanent);
         }
 
         /// <summary>
         /// Load Game Data from temporary file (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Load/Temporary")]
-        public static void LoadTemporary()
+        public static async void LoadTemporary()
         {
-            GameDataHandler.Load(GameDataHandler.DataPersistency.Temporary);
+            await GameDataHandler.Load(GameDataHandler.DataPersistency.Temporary);
         }
 
         /// <summary>
         /// Make Temporary Data Permanent (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Make Temp Data Permanent")]
-        public static void SaveTempData()
+        public static async void SaveTempData()
         {
-            GameDataHandler.MakeTemporaryDataPermanent();
+            await GameDataHandler.MakeTemporaryDataPermanent();
         }
 
         /// <summary>
         /// Clear Temp Data (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Clear Temp data")]
-        public static void ClearTempData()
+        public static async void ClearTempData()
         {
-            GameDataHandler.FlushTempData();
+            await GameDataHandler.FlushTempData();
         }
 
         /// <summary>
@@ -80,9 +77,9 @@ namespace Daniell.Editor.Systems.Save
         /// Clear the saved data (editor only)
         /// </summary>
         [MenuItem("Daniell/Save System/Clear Save Data Folder")]
-        public static void ClearData()
+        public static async void ClearData()
         {
-            GameDataHandler.ClearAllSavedData();
+            await GameDataHandler.ClearAllSavedData();
         }
     }
 }

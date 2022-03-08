@@ -159,7 +159,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Name given to the default slot
         /// </summary>
-        public const string DEFAULT_SLOT_NAME = "Default_User";
+        public const string DEFAULT_SLOT_NAME = "DefaultUser";
 
         /// <summary>
         /// File extension for temporary data
@@ -170,6 +170,16 @@ namespace Daniell.Runtime.Systems.Save
         /// File extension for permanent data
         /// </summary>
         public const string PERMANENT_FILE_EXTENSION = "dat";
+
+        /// <summary>
+        /// Game settings directory
+        /// </summary>
+        public const string GAME_SETTINGS_DIRECTORY = "Settings";
+
+        /// <summary>
+        /// File extension for game settings
+        /// </summary>
+        public const string SETTINGS_FILE_EXTENSION = "config";
 
 
         /* ==========================
@@ -191,6 +201,11 @@ namespace Daniell.Runtime.Systems.Save
         public static string BaseSaveDataPath => Application.persistentDataPath;
 
         /// <summary>
+        /// Path to game settings
+        /// </summary>
+        public static string SettingsDataPath => Path.Combine(BaseSaveDataPath, GAME_SETTINGS_DIRECTORY);
+
+        /// <summary>
         /// Directory where the game files should be stored
         /// </summary>
         public static string WorkingDirectory => Path.Combine(BaseSaveDataPath, ActiveSlot);
@@ -207,7 +222,6 @@ namespace Daniell.Runtime.Systems.Save
 
         private static string _activeSlot;
         private static List<DataSaver> _registeredDataSavers = new List<DataSaver>();
-        private static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
 
         /* ==========================
@@ -242,7 +256,7 @@ namespace Daniell.Runtime.Systems.Save
         /// Save all loaded game data
         /// </summary>
         /// <param name="dataPersistency">Persistency of the data</param>
-        public async static void Save(DataPersistency dataPersistency)
+        public async static Task Save(DataPersistency dataPersistency)
         {
             // Do not execute if there is no data saver to save from
             if (_registeredDataSavers.Count == 0)
@@ -306,7 +320,7 @@ namespace Daniell.Runtime.Systems.Save
         /// Load all saved game data
         /// </summary>
         /// <param name="dataPersistency">Persistency of the data</param>
-        public async static void Load(DataPersistency dataPersistency)
+        public async static Task Load(DataPersistency dataPersistency)
         {
             // Do not execute if there is no data saver to load to
             if (_registeredDataSavers.Count == 0)
@@ -364,7 +378,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Save Temp data to Permanent save file
         /// </summary>
-        public async static void MakeTemporaryDataPermanent()
+        public async static Task MakeTemporaryDataPermanent()
         {
             var tempFiles = await GetSaveFiles(DataPersistency.Temporary);
 
@@ -405,7 +419,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Remove all temp data from save folder
         /// </summary>
-        public async static void FlushTempData()
+        public async static Task FlushTempData()
         {
             var tempFiles = await GetSaveFiles(DataPersistency.Temporary);
 
@@ -422,7 +436,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Clear all the saved data
         /// </summary>
-        public async static void ClearAllSavedData()
+        public async static Task ClearAllSavedData()
         {
             var directory = BaseSaveDataPath;
             await Task.Run(() =>
@@ -438,7 +452,7 @@ namespace Daniell.Runtime.Systems.Save
         /// <summary>
         /// Clear the saved data only for the active slot
         /// </summary>
-        public async static void ClearActiveSlotSavedData()
+        public async static Task ClearActiveSlotSavedData()
         {
             var directory = ActiveSlot;
             await Task.Run(() =>
@@ -451,7 +465,31 @@ namespace Daniell.Runtime.Systems.Save
             });
         }
 
+        /// <summary>
+        /// Save game settings
+        /// </summary>
+        /// <param name="saveDataContainer">Container for settings</param>
+        /// <returns></returns>
+        public async static Task SaveSettings(SaveDataContainer saveDataContainer)
+        {
+            FileHandler fileHandler = new FileHandler(SettingsDataPath, FileHandler.FileType.Json);
+            await fileHandler.Write(saveDataContainer);
+        }
+
+        /// <summary>
+        /// Load game settings
+        /// </summary>
+        /// <returns>Loaded settings</returns>
+        public async static Task<SaveDataContainer> LoadSettings()
+        {
+            FileHandler fileHandler = new FileHandler(SettingsDataPath, FileHandler.FileType.Json);
+            var result = await fileHandler.Read<SaveDataContainer>();
+            return result;
+        }
+
         #endregion
+
+        #region Helpers
 
         /// <summary>
         /// Get File name with extension depending on data persistency
@@ -500,5 +538,7 @@ namespace Daniell.Runtime.Systems.Save
 
             return files;
         }
+
+        #endregion
     }
 }
