@@ -1,8 +1,6 @@
 ﻿using Daniell.Runtime.Helpers.DataStructures;
-using Daniell.Runtime.Helpers.Logging;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -122,7 +120,7 @@ namespace Daniell.Runtime.Helpers.Files
                 throw new System.Exception($"File {_filePath} doesn't exist");
             }
 
-            await Task.Run(() =>
+            var result = await Task.Run(() =>
             {
                 // Read data from file
                 switch (_fileType)
@@ -131,8 +129,9 @@ namespace Daniell.Runtime.Helpers.Files
                         return (T)(object)File.ReadAllText(_filePath);
 
                     case FileType.Json:
-                        string json = File.ReadAllText(_filePath);
-                        return JsonUtility.FromJson<ValueWrapper<T>>(json).value;
+                        var json = File.ReadAllText(_filePath);
+                        var data = JsonUtility.FromJson<ValueWrapper<T>>(json);
+                        return data.value;
 
                     case FileType.Binary:
                         // Open the file
@@ -150,7 +149,7 @@ namespace Daniell.Runtime.Helpers.Files
                 return default;
             });
 
-            return default;
+            return result;
         }
     }
 }
