@@ -82,12 +82,7 @@ namespace Daniell.Editor.Systems.Save
         [MenuItem("Daniell/Save System/Clear Save Data Folder")]
         public static void ClearData()
         {
-            var directory = GameDataHandler.BaseSaveDataPath;
-            if (Directory.Exists(directory))
-            {
-                Directory.Delete(directory, true);
-                ConsoleLogger.Log("Game Data erased", Color.red, ConsoleLogger.LogType.Important);
-            }
+            GameDataHandler.ClearAllSavedData();
         }
     }
 }

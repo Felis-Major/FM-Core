@@ -419,6 +419,38 @@ namespace Daniell.Runtime.Systems.Save
             });
         }
 
+        /// <summary>
+        /// Clear all the saved data
+        /// </summary>
+        public async static void ClearAllSavedData()
+        {
+            var directory = BaseSaveDataPath;
+            await Task.Run(() =>
+            {
+                if (Directory.Exists(directory))
+                {
+                    Directory.Delete(directory, true);
+                    ConsoleLogger.Log("Game Data erased", Color.magenta, ConsoleLogger.LogType.Important);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Clear the saved data only for the active slot
+        /// </summary>
+        public async static void ClearActiveSlotSavedData()
+        {
+            var directory = ActiveSlot;
+            await Task.Run(() =>
+            {
+                if (Directory.Exists(directory))
+                {
+                    Directory.Delete(directory, true);
+                    ConsoleLogger.Log("Game Data erased", Color.magenta, ConsoleLogger.LogType.Important);
+                }
+            });
+        }
+
         #endregion
 
         /// <summary>
