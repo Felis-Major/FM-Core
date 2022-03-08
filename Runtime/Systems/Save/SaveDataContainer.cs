@@ -107,6 +107,28 @@ namespace Daniell.Runtime.Systems.Save
         }
 
         /// <summary>
+        /// Get a stored value using its unique ID
+        /// </summary>
+        /// <typeparam name="T">Type of the value</typeparam>
+        /// <param name="key">ID</param>
+        /// <param name="value">Value of the data</param>
+        /// <returns>True if data was found</returns>
+        public bool TryGet<T>(string key, out T value)
+        {
+            if (Contains(key, out int index))
+            {
+                ValueWrapper<T> data = JsonUtility.FromJson<ValueWrapper<T>>(_data[index].data);
+                value = data.value;
+                return true;
+            }
+
+            Debug.LogWarning($"{key} was not present in the saved data");
+
+            value = default;
+            return false;
+        }
+
+        /// <summary>
         /// Does the currently saved data contains a given key?
         /// </summary>
         /// <param name="key">Key to look for</param>
