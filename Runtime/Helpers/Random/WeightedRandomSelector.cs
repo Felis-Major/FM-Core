@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.Random
+namespace FM.Runtime.Helpers.Random
 {
     /// <summary>
     /// Handles selecting a random item from a list using weighted probabilities

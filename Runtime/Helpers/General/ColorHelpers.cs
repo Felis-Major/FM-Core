@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.General
+namespace FM.Runtime.Helpers.General
 {
     /// <summary>
     /// Collection of color related helpers

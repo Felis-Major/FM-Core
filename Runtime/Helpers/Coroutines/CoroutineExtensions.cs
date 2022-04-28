@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.Coroutines
+namespace FM.Runtime.Helpers.Coroutines
 {
     /// <summary>
     /// Extension Methods for Coroutines

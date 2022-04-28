@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Daniell.Runtime.Helpers.Reflection
+namespace FM.Runtime.Helpers.Reflection
 {
     public static class ReflectionHelpers
     {

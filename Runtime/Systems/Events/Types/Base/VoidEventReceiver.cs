@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Daniell.Runtime.Systems.Events
+namespace FM.Runtime.Systems.Events
 {
     /// <summary>
     /// <inheritdoc/>

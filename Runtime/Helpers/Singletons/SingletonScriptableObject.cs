@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.Singletons
+namespace FM.Runtime.Helpers.Singletons
 {
     public abstract class SingletonScriptableObject<T> : ScriptableObject where T : ScriptableObject
     {

@@ -1,8 +1,8 @@
-using Daniell.Runtime.Systems.Events;
+using FM.Runtime.Systems.Events;
 using UnityEditor;
 using UnityEngine;
 
-namespace Daniell.Editor.Events
+namespace FM.Editor.Events
 {
     [CustomPropertyDrawer(typeof(ScriptableEvent), true)]
     public class ScriptableEventEditor : PropertyDrawer

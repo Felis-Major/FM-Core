@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Daniell.Runtime.Helpers.WebServices
+namespace FM.Runtime.Helpers.WebServices
 {
     /// <summary>
     /// Helper class used to retrieve data from a Google Sheet document.

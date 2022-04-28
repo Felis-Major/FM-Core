@@ -1,4 +1,4 @@
-namespace Daniell.Runtime.Helpers.General
+namespace FM.Runtime.Helpers.General
 {
     /// <summary>
     /// Various consistent execution orders

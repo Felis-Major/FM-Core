@@ -1,9 +1,9 @@
-using Daniell.Runtime.Helpers.General;
+using FM.Runtime.Helpers.General;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace Daniell.Runtime.Helpers.Logging
+namespace FM.Runtime.Helpers.Logging
 {
     /// <summary>
     /// Extended console logging

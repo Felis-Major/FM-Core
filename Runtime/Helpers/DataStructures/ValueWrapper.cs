@@ -1,4 +1,4 @@
-﻿namespace Daniell.Runtime.Helpers.DataStructures
+﻿namespace FM.Runtime.Helpers.DataStructures
 {
     /// <summary>
     /// Wrapper for a single value to enable JSON conversion

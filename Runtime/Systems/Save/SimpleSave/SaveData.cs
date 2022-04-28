@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Daniell.Runtime.Systems.SimpleSave
+namespace FM.Runtime.Systems.SimpleSave
 {
     /// <summary>
     /// JSON data associated with a string key

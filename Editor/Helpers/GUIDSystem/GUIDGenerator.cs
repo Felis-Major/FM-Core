@@ -1,17 +1,17 @@
-﻿using Daniell.Runtime.Helpers.GUIDSystem;
+﻿using FM.Runtime.Helpers.GUIDSystem;
 using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Daniell.Editor.GUIDSystem
+namespace FM.Editor.GUIDSystem
 {
     public static class GUIDGenerator
     {
         /// <summary>
         /// Regenerate GUIDs for all fields marked with the GUID Attribute
         /// </summary>
-        [MenuItem("Daniell/GUID Generator/Regenerate Scene GUIDs")]
+        [MenuItem("Felis Major/GUID Generator/Regenerate Scene GUIDs")]
         public static void RegenerateSceneGUIDs()
         {
             string generatedGUIDsLog = "";

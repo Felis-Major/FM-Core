@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Daniell.Runtime.Helpers.Encoding
+namespace FM.Runtime.Helpers.Encoding
 {
     public class SymetricEncoder
     {

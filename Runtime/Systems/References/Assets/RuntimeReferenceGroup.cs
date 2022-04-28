@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Daniell.Runtime.References
+namespace FM.Runtime.References
 {
     /// <summary>
     /// Object updated at runtime with a list of linked objects
     /// </summary>
-    [CreateAssetMenu(menuName = "Daniell/References/Runtime Reference Group")]
+    [CreateAssetMenu(menuName = "Felis Major/References/Runtime Reference Group")]
     public class RuntimeReferenceGroup : RuntimeReference, IEnumerable<GameObject>
     {
         /* ==========================

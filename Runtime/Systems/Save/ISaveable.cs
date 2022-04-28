@@ -1,4 +1,4 @@
-﻿namespace Daniell.Runtime.Systems.Save
+﻿namespace FM.Runtime.Systems.Save
 {
     /// <summary>
     /// Object that can be saved

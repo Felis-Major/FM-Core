@@ -1,7 +1,7 @@
-﻿using Daniell.Runtime.Systems.Save;
+﻿using FM.Runtime.Systems.Save;
 using UnityEditor;
 
-namespace Daniell.Editor.Systems.Save
+namespace FM.Editor.Systems.Save
 {
     /// <summary>
     /// List of methods used by the Game Data Handler to save and load data
@@ -11,7 +11,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Save Game Data in permanent file (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Save/Permanent")]
+        [MenuItem("Felis Major/Save System/Save/Permanent")]
         public static async void SavePermanent()
         {
             await GameDataHandler.Save(GameDataHandler.DataPersistency.Permanent);
@@ -20,7 +20,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Save Game Data in temporary file (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Save/Temporary")]
+        [MenuItem("Felis Major/Save System/Save/Temporary")]
         public static async void SaveTemporary()
         {
             await GameDataHandler.Save(GameDataHandler.DataPersistency.Temporary);
@@ -29,7 +29,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Load Game Data from permanent file (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Load/Permanent")]
+        [MenuItem("Felis Major/Save System/Load/Permanent")]
         public static async void LoadPermanent()
         {
             await GameDataHandler.Load(GameDataHandler.DataPersistency.Permanent);
@@ -38,7 +38,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Load Game Data from temporary file (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Load/Temporary")]
+        [MenuItem("Felis Major/Save System/Load/Temporary")]
         public static async void LoadTemporary()
         {
             await GameDataHandler.Load(GameDataHandler.DataPersistency.Temporary);
@@ -47,7 +47,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Make Temporary Data Permanent (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Make Temp Data Permanent")]
+        [MenuItem("Felis Major/Save System/Make Temp Data Permanent")]
         public static async void SaveTempData()
         {
             await GameDataHandler.MakeTemporaryDataPermanent();
@@ -56,7 +56,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Clear Temp Data (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Clear Temp data")]
+        [MenuItem("Felis Major/Save System/Clear Temp data")]
         public static async void ClearTempData()
         {
             await GameDataHandler.FlushTempData();
@@ -65,7 +65,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Open the save data folder (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Open Save Data Folder...")]
+        [MenuItem("Felis Major/Save System/Open Save Data Folder...")]
         public static void OpenSaveDataFolder()
         {
             string path = GameDataHandler.BaseSaveDataPath;
@@ -76,7 +76,7 @@ namespace Daniell.Editor.Systems.Save
         /// <summary>
         /// Clear the saved data (editor only)
         /// </summary>
-        [MenuItem("Daniell/Save System/Clear Save Data Folder")]
+        [MenuItem("Felis Major/Save System/Clear Save Data Folder")]
         public static async void ClearData()
         {
             await GameDataHandler.ClearAllSavedData();

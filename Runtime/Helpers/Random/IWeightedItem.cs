@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.Random
+namespace FM.Runtime.Helpers.Random
 {
     /// <summary>
     /// Interface for an item that can be randomly picked using weight

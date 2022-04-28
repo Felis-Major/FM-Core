@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Daniell.Runtime.Systems.Events
+namespace FM.Runtime.Systems.Events
 {
     /// <summary>
     /// Handles creating dynamic unity event types and dispatching an Event

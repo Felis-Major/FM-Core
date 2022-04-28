@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Daniell.Runtime.Helpers.Coroutines
+namespace FM.Runtime.Helpers.Coroutines
 {
     /// <summary>
     /// Represents an action that can be executed over a period of time

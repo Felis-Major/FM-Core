@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Daniell.Runtime.Systems.StateMachine
+namespace FM.Runtime.Systems.StateMachine
 {
     /// <summary>
     /// Represents a state that can be used by a controller

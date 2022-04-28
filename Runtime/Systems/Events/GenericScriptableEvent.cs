@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Daniell.Runtime.Systems.Events
+namespace FM.Runtime.Systems.Events
 {
     /// <summary>
     /// Generic event that can be saved and referenced

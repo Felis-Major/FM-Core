@@ -1,4 +1,4 @@
-﻿namespace Daniell.Runtime.Systems.StateMachine
+﻿namespace FM.Runtime.Systems.StateMachine
 {
     /// <summary>
     /// Handles updating and transitionning between states

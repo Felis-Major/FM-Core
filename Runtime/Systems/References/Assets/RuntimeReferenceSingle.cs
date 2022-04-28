@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-namespace Daniell.Runtime.References
+namespace FM.Runtime.References
 {
     /// <summary>
     /// Single reference to an object at runtime
     /// </summary>
-    [CreateAssetMenu(menuName = "Daniell/References/Runtime Reference Single")]
+    [CreateAssetMenu(menuName = "Felis Major/References/Runtime Reference Single")]
     public class RuntimeReferenceSingle : RuntimeReference
     {
         /* ==========================

@@ -1,7 +1,7 @@
-﻿using Daniell.Runtime.Helpers.General;
+﻿using FM.Runtime.Helpers.General;
 using UnityEngine;
 
-namespace Daniell.Runtime.Systems.Events
+namespace FM.Runtime.Systems.Events
 {
     /// <summary>
     /// Base class for receiving an event

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Daniell.Runtime.Systems.Events
+namespace FM.Runtime.Systems.Events
 {
     public class GameObjectEventReceiver : GenericEventReceiver<GameObject, GameObjectEvent> { }
 }

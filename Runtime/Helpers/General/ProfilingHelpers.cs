@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Daniell.Runtime.Helpers.General
+namespace FM.Runtime.Helpers.General
 {
     /// <summary>
     /// Helpers related to profiling

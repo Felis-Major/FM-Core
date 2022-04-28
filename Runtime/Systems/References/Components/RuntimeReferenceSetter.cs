@@ -1,9 +1,9 @@
-using Daniell.Runtime.Helpers.General;
+using FM.Runtime.Helpers.General;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Daniell.Runtime.References
+namespace FM.Runtime.References
 {
     /// <summary>
     /// Adds the GameObject this component is placed on to a given Runtime Group

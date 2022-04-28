@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.StateMachine
+namespace FM.Runtime.Helpers.StateMachine
 {
     /// <summary>
     /// State that can be added to an FSMController

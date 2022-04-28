@@ -1,10 +1,10 @@
-﻿using Daniell.Runtime.Helpers.DataStructures;
+﻿using FM.Runtime.Helpers.DataStructures;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Daniell.Runtime.Helpers.Files
+namespace FM.Runtime.Helpers.Files
 {
     /// <summary>
     /// Base class for handling files

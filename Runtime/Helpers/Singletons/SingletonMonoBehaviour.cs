@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Daniell.Runtime.Helpers.Singletons
+namespace FM.Runtime.Helpers.Singletons
 {
     /// <summary>
     /// Singleton implementation for a MonoBehaviour

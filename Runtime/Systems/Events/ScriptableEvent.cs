@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Daniell.Runtime.Systems.Events
+namespace FM.Runtime.Systems.Events
 {
     /// <summary>
     /// Event that can be saved and referenced
@@ -12,7 +12,7 @@ namespace Daniell.Runtime.Systems.Events
         /// <summary>
         /// Base menu path
         /// </summary>
-        public const string MENU_PATH_BASE = "Daniell/Events/";
+        public const string MENU_PATH_BASE = "Felis Major/Events/";
 
         /// <summary>
         /// Is this event active?
