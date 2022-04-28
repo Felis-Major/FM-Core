@@ -1,7 +1,7 @@
 {
-  "name": "com.felismajor.daniellcore",
+  "name": "com.felismajor.core",
   "version": "1.2.0",
-  "displayName": "Daniell Core",
+  "displayName": "FM Core",
   "description": "Various Unity helpers and systems that can be used in most game projects",
   "unity": "2020.3",
   "unityRelease": "0b5",
