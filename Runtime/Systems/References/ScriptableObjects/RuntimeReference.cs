@@ -28,5 +28,9 @@ namespace FM.Runtime.References
 		{
 			OnReferenceUnloaded?.Invoke();
 		}
+
+		public abstract void ExecuteOnLoad(Action<GameObject> onLoadedAction);
+
+		public abstract void ExecuteOnUnload(Action onUnloadedAction);
 	}
 }

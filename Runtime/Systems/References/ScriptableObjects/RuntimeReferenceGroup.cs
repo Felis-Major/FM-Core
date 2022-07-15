@@ -81,5 +81,15 @@ namespace FM.Runtime.References
 		}
 
 		#endregion
+
+		public override void ExecuteOnLoad(System.Action<GameObject> onLoadedAction)
+		{
+			// todo: Implement this
+		}
+
+		public override void ExecuteOnUnload(System.Action onUnloadedAction)
+		{
+			// todo: Implement this
+		}
 	}
 }
