@@ -2,7 +2,7 @@
     "name": "FM-Core.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:d1c4eec224ee7b24e82c3e2368f75fde"
+        "GUID:1867ed4e66911f449810df58fd4d816f"
     ],
     "includePlatforms": [
         "Editor"
