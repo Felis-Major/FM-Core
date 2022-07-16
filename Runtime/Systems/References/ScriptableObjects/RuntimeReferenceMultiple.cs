@@ -7,9 +7,19 @@ namespace FM.Runtime.References
 	/// <summary>
 	/// Object updated at runtime with a list of linked objects
 	/// </summary>
-	[CreateAssetMenu(menuName = "Felis Major/References/Runtime Reference Group")]
-	public class RuntimeReferenceGroup : RuntimeReference, IEnumerable<GameObject>
+	[CreateAssetMenu(menuName = "Felis Major/References/Runtime Reference Multiple")]
+	public class RuntimeReferenceMultiple : RuntimeReference, IEnumerable<GameObject>
 	{
+		/* ==========================
+		 * > Properties
+		 * -------------------------- */
+
+		/// <summary>
+		/// <inheritdoc/>
+		/// </summary>
+		public override bool IsLoaded => _targets != null && _targets.Count > 0;
+
+
 		/* ==========================
          * > Private Fields
          * -------------------------- */
@@ -20,6 +30,8 @@ namespace FM.Runtime.References
 		/* ==========================
          * > Methods
          * -------------------------- */
+
+		#region Runtime Reference
 
 		/// <summary>
 		/// <inheritdoc/>
@@ -68,6 +80,8 @@ namespace FM.Runtime.References
 			return components.ToArray();
 		}
 
+		#endregion
+
 		#region IEnumerable 
 
 		public IEnumerator<GameObject> GetEnumerator()
@@ -81,15 +95,5 @@ namespace FM.Runtime.References
 		}
 
 		#endregion
-
-		public override void ExecuteOnLoad(System.Action<GameObject> onLoadedAction)
-		{
-			// todo: Implement this
-		}
-
-		public override void ExecuteOnUnload(System.Action onUnloadedAction)
-		{
-			// todo: Implement this
-		}
 	}
 }

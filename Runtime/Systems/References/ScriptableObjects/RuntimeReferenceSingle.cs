@@ -13,9 +13,9 @@ namespace FM.Runtime.References
          * -------------------------- */
 
 		/// <summary>
-		/// Is this reference ready to be used?
+		/// <inheritdoc/>
 		/// </summary>
-		public bool IsReady => _target != null;
+		public override bool IsLoaded => _target != null;
 
 		/// <summary>
 		/// Reference target
@@ -66,44 +66,6 @@ namespace FM.Runtime.References
 			}
 
 			return null;
-		}
-
-		public override void ExecuteOnLoad(System.Action<GameObject> onLoadedAction)
-		{
-			// If the object is ready
-			if (IsReady)
-			{
-				onLoadedAction?.Invoke(Target);
-			}
-			// If the object is not ready
-			else
-			{
-				OnReferenceLoaded += Execute;
-
-				void Execute()
-				{
-					onLoadedAction?.Invoke(Target);
-					OnReferenceLoaded -= Execute;
-				}
-			}
-		}
-
-		public override void ExecuteOnUnload(System.Action onUnloadedAction)
-		{
-			if (!IsReady)
-			{
-				onUnloadedAction?.Invoke();
-			}
-			else
-			{
-				OnReferenceUnloaded += Execute;
-
-				void Execute()
-				{
-					onUnloadedAction?.Invoke();
-					OnReferenceUnloaded -= Execute;
-				}
-			}
 		}
 	}
 }

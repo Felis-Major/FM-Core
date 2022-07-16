@@ -8,8 +8,34 @@ namespace FM.Runtime.References
 	/// </summary>
 	public abstract class RuntimeReference : ScriptableObject
 	{
+		/* ==========================
+		 * > Properties
+		 * -------------------------- */
+
+		/// <summary>
+		/// Is this reference loaded?
+		/// </summary>
+		public abstract bool IsLoaded { get; }
+
+
+		/* ==========================
+		 * > Events
+		 * -------------------------- */
+
+		/// <summary>
+		/// Called when this reference is loaded
+		/// </summary>
 		public event Action OnReferenceLoaded;
+
+		/// <summary>
+		/// Called when this reference is unloaded
+		/// </summary>
 		public event Action OnReferenceUnloaded;
+
+
+		/* ==========================
+		 * > Methods
+		 * -------------------------- */
 
 		/// <summary>
 		/// Add a reference
@@ -28,9 +54,5 @@ namespace FM.Runtime.References
 		{
 			OnReferenceUnloaded?.Invoke();
 		}
-
-		public abstract void ExecuteOnLoad(Action<GameObject> onLoadedAction);
-
-		public abstract void ExecuteOnUnload(Action onUnloadedAction);
 	}
 }
