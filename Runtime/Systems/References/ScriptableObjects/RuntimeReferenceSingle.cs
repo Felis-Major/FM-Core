@@ -59,10 +59,13 @@ namespace FM.Runtime.References
 		/// <returns>Reference as T</returns>
 		public T Get<T>() where T : Object
 		{
-			var component = _target.GetComponent<T>();
-			if (component != null)
+			if (_target != null)
 			{
-				return component;
+				T component = _target.GetComponent<T>();
+				if (component != null)
+				{
+					return component;
+				}
 			}
 
 			return null;

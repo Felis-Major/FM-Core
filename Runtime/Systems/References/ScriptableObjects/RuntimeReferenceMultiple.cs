@@ -66,11 +66,16 @@ namespace FM.Runtime.References
 		/// <returns>List of T</returns>
 		public T[] Get<T>() where T : Object
 		{
-			List<T> components = new List<T>();
-
-			for (int i = 0; i < _targets.Count; i++)
+			if (_targets.Count == 0)
 			{
-				var component = _targets[i].GetComponent<T>();
+				return new T[0];
+			}
+
+			var components = new List<T>();
+
+			for (var i = 0; i < _targets.Count; i++)
+			{
+				T component = _targets[i].GetComponent<T>();
 				if (component != null)
 				{
 					components.Add(component);
