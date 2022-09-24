@@ -1,155 +1,155 @@
-﻿using FM.Runtime.Helpers.DataStructures;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+using FM.Runtime.Helpers.DataStructures;
 using UnityEngine;
 
 namespace FM.Runtime.Helpers.Files
 {
-    /// <summary>
-    /// Base class for handling files
-    /// </summary>
-    public class FileHandler
-    {
-        /* ==========================
+	/// <summary>
+	/// Base class for handling files
+	/// </summary>
+	public class FileHandler
+	{
+		/* ==========================
          * > Data Structures
          * -------------------------- */
 
-        /// <summary>
-        /// Type of the file
-        /// </summary>
-        public enum FileType
-        {
-            /// <summary>
-            /// Plain text
-            /// </summary>
-            Text,
+		/// <summary>
+		/// Type of the file
+		/// </summary>
+		public enum FileType
+		{
+			/// <summary>
+			/// Plain text
+			/// </summary>
+			Text,
 
-            /// <summary>
-            /// JSON file
-            /// </summary>
-            Json,
+			/// <summary>
+			/// JSON file
+			/// </summary>
+			Json,
 
-            /// <summary>
-            /// Binary formatted file
-            /// </summary>
-            Binary
-        }
+			/// <summary>
+			/// Binary formatted file
+			/// </summary>
+			Binary
+		}
 
 
-        /* ==========================
+		/* ==========================
          * > Private Fields
          * -------------------------- */
 
-        protected readonly FileType _fileType;
-        protected readonly string _filePath;
+		protected readonly FileType _fileType;
+		protected readonly string _filePath;
 
 
-        /* ==========================
+		/* ==========================
          * > Constructors
          * -------------------------- */
 
-        public FileHandler(string filePath, FileType fileType)
-        {
-            _filePath = filePath;
-            _fileType = fileType;
-        }
+		public FileHandler(string filePath, FileType fileType)
+		{
+			_filePath = filePath;
+			_fileType = fileType;
+		}
 
 
-        /* ==========================
+		/* ==========================
          * > Methods
          * -------------------------- */
 
-        /// <summary>
-        /// Write data to a file
-        /// </summary>
-        /// <typeparam name="T">Data to be written</typeparam>
-        /// <param name="data">Data Type</param>
-        public async Task Write<T>(T data)
-        {
-            // Create directory if it doesn't exist
-            var dir = Path.GetDirectoryName(_filePath);
+		/// <summary>
+		/// Write data to a file
+		/// </summary>
+		/// <typeparam name="T">Data to be written</typeparam>
+		/// <param name="data">Data Type</param>
+		public async Task Write<T>(T data)
+		{
+			// Create directory if it doesn't exist
+			var dir = Path.GetDirectoryName(_filePath);
 
-            await Task.Run(() =>
-            {
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
+			await Task.Run(() =>
+			{
+				if (!Directory.Exists(dir))
+				{
+					Directory.CreateDirectory(dir);
+				}
 
-                // Write data to file
-                switch (_fileType)
-                {
-                    // Write file as text
-                    case FileType.Text:
-                        File.WriteAllText(_filePath, data.ToString());
-                        break;
+				// Write data to file
+				switch (_fileType)
+				{
+					// Write file as text
+					case FileType.Text:
+						File.WriteAllText(_filePath, data.ToString());
+						break;
 
-                    // Write file as Json
-                    case FileType.Json:
-                        var jsonData = JsonUtility.ToJson(new ValueWrapper<T>(data), true);
-                        File.WriteAllText(_filePath, jsonData);
-                        break;
+					// Write file as Json
+					case FileType.Json:
+						var jsonData = JsonUtility.ToJson(new ValueWrapper<T>(data), true);
+						File.WriteAllText(_filePath, jsonData);
+						break;
 
-                    // Write file as Binary
-                    case FileType.Binary:
-                        // Create the file
-                        FileStream stream = new FileStream(_filePath, FileMode.Create);
+					// Write file as Binary
+					case FileType.Binary:
+						// Create the file
+						var stream = new FileStream(_filePath, FileMode.Create);
 
-                        // Serialize Data and save to file
-                        BinaryFormatter binaryFormatter = new BinaryFormatter();
-                        binaryFormatter.Serialize(stream, new ValueWrapper<T>(data));
+						// Serialize Data and save to file
+						var binaryFormatter = new BinaryFormatter();
+						binaryFormatter.Serialize(stream, new ValueWrapper<T>(data));
 
-                        // Close the file stream
-                        stream.Close();
-                        break;
-                }
-            });
-        }
+						// Close the file stream
+						stream.Close();
+						break;
+				}
+			});
+		}
 
-        /// <summary>
-        /// Read data from a file
-        /// </summary>
-        /// <typeparam name="T">Data Type</typeparam>
-        /// <returns>Data as T</returns>
-        public async Task<T> Read<T>()
-        {
-            // Throw an exception if the file doesn't exist
-            if (!File.Exists(_filePath))
-            {
-                throw new System.Exception($"File {_filePath} doesn't exist");
-            }
+		/// <summary>
+		/// Read data from a file
+		/// </summary>
+		/// <typeparam name="T">Data Type</typeparam>
+		/// <returns>Data as T</returns>
+		public async Task<T> Read<T>()
+		{
+			// Throw an exception if the file doesn't exist
+			if (!File.Exists(_filePath))
+			{
+				throw new System.Exception($"File {_filePath} doesn't exist");
+			}
 
-            var result = await Task.Run(() =>
-            {
-                // Read data from file
-                switch (_fileType)
-                {
-                    case FileType.Text:
-                        return (T)(object)File.ReadAllText(_filePath);
+			T result = await Task.Run(() =>
+			{
+				// Read data from file
+				switch (_fileType)
+				{
+					case FileType.Text:
+						return (T)(object)File.ReadAllText(_filePath);
 
-                    case FileType.Json:
-                        var json = File.ReadAllText(_filePath);
-                        var data = JsonUtility.FromJson<ValueWrapper<T>>(json);
-                        return data.value;
+					case FileType.Json:
+						var json = File.ReadAllText(_filePath);
+						ValueWrapper<T> data = JsonUtility.FromJson<ValueWrapper<T>>(json);
+						return data.value;
 
-                    case FileType.Binary:
-                        // Open the file
-                        FileStream stream = new FileStream(_filePath, FileMode.Open);
+					case FileType.Binary:
+						// Open the file
+						var stream = new FileStream(_filePath, FileMode.Open);
 
-                        // Deserialize data
-                        BinaryFormatter binaryFormatter = new BinaryFormatter();
-                        var serializedData = (ValueWrapper<T>)binaryFormatter.Deserialize(stream);
-                        stream.Close();
+						// Deserialize data
+						var binaryFormatter = new BinaryFormatter();
+						var serializedData = (ValueWrapper<T>)binaryFormatter.Deserialize(stream);
+						stream.Close();
 
-                        return serializedData.value;
-                }
+						return serializedData.value;
+				}
 
-                // Return default if a case wasn't handled
-                return default;
-            });
+				// Return default if a case wasn't handled
+				return default;
+			});
 
-            return result;
-        }
-    }
+			return result;
+		}
+	}
 }
