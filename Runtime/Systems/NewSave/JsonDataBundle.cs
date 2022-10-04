@@ -21,7 +21,7 @@ public class JsonDataBundle : DataBundle<string>
 		for (var i = 0; i < data.Count; i++)
 		{
 			DataBlock dataBlock = data[i];
-			SetData(dataBlock.Guid, DeserializeData<string>(dataBlock.SerializedData));
+			SetData(dataBlock.ID, DeserializeData<string>(dataBlock.SerializedData));
 		}
 	}
 

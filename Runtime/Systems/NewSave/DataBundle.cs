@@ -36,7 +36,6 @@ public abstract class DataBundle : ScriptableObject
 	#endregion
 }
 
-
 /// <summary>
 /// Contains a list of <see cref="DataBlock"/> and saves it to a file
 /// <typeparam name="TSerializedType">Data once serialized</typeparam>
@@ -48,7 +47,7 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 	 * -------------------------- */
 
 	/// <summary>
-	/// Link between a <see cref="TSerializedType"/> and a guid (<see cref="string"/>)
+	/// Link between a <see cref="TSerializedType"/> and an id (<see cref="string"/>)
 	/// </summary>
 	[Serializable]
 	protected class DataBlock
@@ -58,9 +57,9 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 		 * -------------------------- */
 
 		/// <summary>
-		/// Guid for this <see cref="DataBlock"/>
+		/// ID for this <see cref="DataBlock"/>
 		/// </summary>
-		public string Guid => _guid;
+		public string ID => _id;
 
 		/// <summary>
 		/// <see cref="TSerializedType"/> for this <see cref="DataBlock"/>
@@ -74,7 +73,7 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 
 		[SerializeField]
 		//[HideInInspector]
-		private string _guid;
+		private string _id;
 
 		[SerializeField]
 		//[HideInInspector]
@@ -85,10 +84,10 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 		 * > Constructors
 		 * -------------------------- */
 
-		public DataBlock(string guid, TSerializedType @object)
+		public DataBlock(string id, TSerializedType serializedData)
 		{
-			_guid = guid;
-			_serializedData = @object;
+			_id = id;
+			_serializedData = serializedData;
 		}
 	}
 
@@ -111,13 +110,13 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 	/// Add/Update an entry in the <see cref="DataBlock"/> list
 	/// </summary>
 	/// <typeparam name="T">Type of data to be added</typeparam>
-	/// <param name="guid">ID of the data</param>
+	/// <param name="id">ID of the data</param>
 	/// <param name="data">Raw data</param>
-	public void SetData<T>(string guid, T data)
+	public void SetData<T>(string id, T data)
 	{
 		TSerializedType serializedData = SerializeData<T>(data);
-		var newData = new DataBlock(guid, serializedData);
-		DataBlock existingData = GetDataByGuid(guid, out var i);
+		var newData = new DataBlock(id, serializedData);
+		DataBlock existingData = GetDataByID(id, out var i);
 
 		if (existingData == null)
 		{
@@ -130,15 +129,15 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 	}
 
 	/// <summary>
-	/// Find data by guid
+	/// Find data by id
 	/// </summary>
 	/// <typeparam name="T">Type of data to be return</typeparam>
-	/// <param name="guid">Guid of the data</param>
+	/// <param name="id">ID of the data</param>
 	/// <param name="wasDataFound">True if data was found</param>
 	/// <returns>Data as <typeparamref name="T"/></returns>
-	public T GetData<T>(string guid, out bool wasDataFound)
+	public T GetData<T>(string id, out bool wasDataFound)
 	{
-		DataBlock data = GetDataByGuid(guid, out _);
+		DataBlock data = GetDataByID(id, out _);
 
 		if (data != null)
 		{
@@ -154,11 +153,11 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 	/// <summary>
 	/// Remove data from this <see cref="DataBundle"/>
 	/// </summary>
-	/// <param name="guid">Guid of the <see cref="DataBlock"/> to be removed</param>
+	/// <param name="id">ID of the <see cref="DataBlock"/> to be removed</param>
 	/// <returns>True if data was removed</returns>
-	public bool RemoveData(string guid)
+	public bool RemoveData(string id)
 	{
-		DataBlock data = GetDataByGuid(guid, out _);
+		DataBlock data = GetDataByID(id, out _);
 
 		// Remove data if it exists
 		if (data != null)
@@ -205,17 +204,17 @@ public abstract class DataBundle<TSerializedType> : DataBundle
 	#region Helpers
 
 	/// <summary>
-	/// Get a <see cref="DataBlock"/> by its guid
+	/// Get a <see cref="DataBlock"/> by its id
 	/// </summary>
-	/// <param name="guid">Guid to get the <see cref="DataBlock"/> from</param>
+	/// <param name="id">id to get the <see cref="DataBlock"/> from</param>
 	/// <param name="index">Index of the found <see cref="DataBlock"/>. Will return -1 if nothing was found</param>
 	/// <returns><see cref="DataBlock.Empty"/> if no <see cref="DataBlock"/> was found</returns>
-	private DataBlock GetDataByGuid(string guid, out int index)
+	private DataBlock GetDataByID(string id, out int index)
 	{
 		for (var i = 0; i < _data.Count; i++)
 		{
 			DataBlock data = _data[i];
-			if (data.Guid == guid)
+			if (data.ID == id)
 			{
 				index = i;
 				return data;

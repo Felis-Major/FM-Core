@@ -10,9 +10,11 @@ public static class DataBundlesHandler
 
 	private static DataBundle[] GetAllDataBundles()
 	{
+		// Load all objects from the resources folder
 		object[] objects = Resources.LoadAll<Object>(SaveableAssetLocation);
 		List<DataBundle> dataBundles = new();
 
+		// Find all the objects that are databundles and cache them into a list
 		for (var i = 0; i < objects.Length; i++)
 		{
 			var obj = objects[i];
@@ -22,6 +24,7 @@ public static class DataBundlesHandler
 			}
 		}
 
+		// Return the list as array for convenience
 		return dataBundles.ToArray();
 	}
 
