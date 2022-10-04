@@ -16,7 +16,7 @@ namespace FM.Runtime.Systems.Save
 		/// <summary>
 		/// Name of the file to be saved
 		/// </summary>
-		public virtual string FileName => name;
+		public virtual string FileName => $"{name}.json";
 
 
 		/* ==========================

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -8,7 +10,6 @@ namespace FM.Runtime.Systems.Save
 	public static class DataBundlesHandler
 	{
 		public const string SaveableAssetLocation = "Saveables";
-		public const string FileExtension = "txt";
 
 		private static DataBundle[] GetAllDataBundles()
 		{
@@ -30,9 +31,35 @@ namespace FM.Runtime.Systems.Save
 			return dataBundles.ToArray();
 		}
 
-		private static string GetFilePath(string fileName)
+		/// <summary>
+		/// Find the path of the file that will be created
+		/// </summary>
+		/// <param name="fileName">Name of the file to be created</param>
+		/// <param name="filePath">Complete path of the file</param>
+		/// <remarks>Will create a new file/directory if it doesn't already exist</remarks>
+		/// <returns>True if the file already exists</returns>
+		private static void GetFilePath(string fileName, out string filePath, out bool wasFileCreated)
 		{
-			return $"{Application.persistentDataPath}/{SaveableAssetLocation}/{fileName}.{FileExtension}";
+			// Initialize output
+			wasFileCreated = false;
+
+			// Find the path of the file
+			var fileDirectory = $"{Application.persistentDataPath}/{SaveableAssetLocation}/";
+			filePath = Path.Combine(fileDirectory, fileName);
+
+			// Evaluate directories
+			var doesDirectoryExist = Directory.Exists(fileDirectory);
+			var doesFileExist = File.Exists($"{fileDirectory}/{fileName}");
+			var shouldCreateFile = !(doesDirectoryExist && doesFileExist);
+
+			// Create path if it doesn't already exist
+			if (shouldCreateFile)
+			{
+				Directory.CreateDirectory(fileDirectory);
+				FileStream fileStream = File.Create(filePath);
+				fileStream.Close();
+				wasFileCreated = true;
+			}
 		}
 
 		[MenuItem("Felis Major/Load")]
@@ -43,8 +70,7 @@ namespace FM.Runtime.Systems.Save
 
 			for (var i = 0; i < dataBundles.Length; i++)
 			{
-				// Build filepath
-				var filePath = GetFilePath(dataBundles[i].FileName);
+				GetFilePath(dataBundles[i].FileName, out var filePath, out _);
 				dataBundles[i].Load(filePath);
 			}
 		}
@@ -57,10 +83,21 @@ namespace FM.Runtime.Systems.Save
 
 			for (var i = 0; i < dataBundles.Length; i++)
 			{
-				// Build filepath
-				var filePath = GetFilePath(dataBundles[i].FileName);
+				GetFilePath(dataBundles[i].FileName, out var filePath, out _);
 				dataBundles[i].Save(filePath);
 			}
 		}
+
+#if UNITY_EDITOR
+
+		[MenuItem("Felis Major/Open persistent data path...")]
+		public static void OpenPersistentDataPath()
+		{
+			// fix this
+			var saveDirectory = $"{Application.persistentDataPath}/{SaveableAssetLocation}/";
+			UnityEngine.Debug.Log(saveDirectory);
+			Process.Start("explorer.exe", saveDirectory);
+		}
+#endif
 	}
 }

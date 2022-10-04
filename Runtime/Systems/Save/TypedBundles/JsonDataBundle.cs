@@ -20,13 +20,25 @@ namespace FM.Runtime.Systems.Save
 			ClearData();
 
 			// Read the whole file as text and convert from JSON
-			var json = File.ReadAllText(filePath);
-			List<DataBlock> data = JsonUtility.FromJson<ValueWrapper<List<DataBlock>>>(json).value;
+			var streamReader = new StreamReader(filePath);
+			var rawJson = streamReader.ReadToEnd();
+			streamReader.Close();
 
-			for (var i = 0; i < data.Count; i++)
+			// Check if the JSON file is not null, empty or whitespace
+			if (!string.IsNullOrWhiteSpace(rawJson))
 			{
-				DataBlock dataBlock = data[i];
-				SetData(dataBlock.ID, DeserializeData<string>(dataBlock.SerializedData));
+				// Deserialize json into a value wrapper
+				ValueWrapper<List<DataBlock>> rawDataBlock = JsonUtility.FromJson<ValueWrapper<List<DataBlock>>>(rawJson);
+
+				// Get data from the wrapper
+				List<DataBlock> data = rawDataBlock.value;
+
+				// Fill the data bundle with data
+				for (var i = 0; i < data.Count; i++)
+				{
+					DataBlock dataBlock = data[i];
+					SetData(dataBlock.ID, DeserializeData<string>(dataBlock.SerializedData));
+				}
 			}
 		}
 
@@ -35,8 +47,13 @@ namespace FM.Runtime.Systems.Save
 		/// </summary>
 		public override void Save(string filePath)
 		{
+			// Convert current data to json
 			var json = JsonUtility.ToJson(new ValueWrapper<List<DataBlock>>(_data), true);
-			File.WriteAllText(filePath, json);
+
+			// Write the whole json content
+			var streamWriter = new StreamWriter(filePath);
+			streamWriter.Write(json);
+			streamWriter.Close();
 		}
 
 		/// <summary>
