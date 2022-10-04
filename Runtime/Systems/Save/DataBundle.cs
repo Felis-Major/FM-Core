@@ -111,12 +111,10 @@ namespace FM.Runtime.Systems.Save
 		/// <summary>
 		/// Add/Update an entry in the <see cref="DataBlock"/> list
 		/// </summary>
-		/// <typeparam name="T">Type of data to be added</typeparam>
 		/// <param name="id">ID of the data</param>
-		/// <param name="data">Raw data</param>
-		public void SetData<T>(string id, T data)
+		/// <param name="serializedData">Serialized data</param>
+		protected void SetSerializedData(string id, TSerializedType serializedData)
 		{
-			TSerializedType serializedData = SerializeData<T>(data);
 			var newData = new DataBlock(id, serializedData);
 			DataBlock existingData = GetDataByID(id, out var i);
 
@@ -128,6 +126,18 @@ namespace FM.Runtime.Systems.Save
 			{
 				_data[i] = newData;
 			}
+		}
+
+		/// <summary>
+		/// Add/Update an entry in the <see cref="DataBlock"/> list
+		/// </summary>
+		/// <typeparam name="T">Type of data to be added</typeparam>
+		/// <param name="id">ID of the data</param>
+		/// <param name="data">Raw data</param>
+		public void SetData<T>(string id, T data)
+		{
+			TSerializedType serializedData = SerializeData(data);
+			SetSerializedData(id, serializedData);
 		}
 
 		/// <summary>
