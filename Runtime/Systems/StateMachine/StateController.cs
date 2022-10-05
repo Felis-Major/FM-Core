@@ -39,19 +39,17 @@ namespace FM.Runtime.Systems.StateMachine
 		public override void SetState(State newState)
 		{
 			// Do not execute if both states are null
-			if (CurrentState == null || newState == null)
+			if (CurrentState != null)
 			{
-				return;
+				// Unsubscribe from the old state
+				CurrentState.OnNextStateReady -= SetState;
+
+				// End current state if it exists
+				CurrentState.OnEndState();
+
+				// Remove the old state controller
+				CurrentState.StateController = null;
 			}
-
-			// Unsubscribe from the old state
-			CurrentState.OnNextStateReady -= SetState;
-
-			// End current state if it exists
-			CurrentState.OnEndState();
-
-			// Remove the old state controller
-			CurrentState.StateController = null;
 
 			if (newState != null)
 			{
