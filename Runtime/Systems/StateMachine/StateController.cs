@@ -1,10 +1,20 @@
-﻿namespace FM.Runtime.Systems.StateMachine
+﻿using System;
+
+namespace FM.Runtime.Systems.StateMachine
 {
+	/// <summary>
+	/// Base class for a state controller
+	/// </summary>
+	public abstract class StateController
+	{
+		public abstract void SetState(State newState);
+	}
+
 	/// <summary>
 	/// Handles updating and transitionning between states
 	/// </summary>
 	/// <typeparam name="T">Type of state</typeparam>
-	public class StateController<T> where T : State
+	public class StateController<T> : StateController where T : State
 	{
 		/* ==========================
          * > Private Fields
@@ -26,7 +36,7 @@
 		/// Set a new state as the current state in the controller
 		/// </summary>
 		/// <param name="newState">State to be set as current state</param>
-		public void SetState(State newState)
+		public override void SetState(State newState)
 		{
 			// Do not execute if both states are null
 			if (CurrentState == null || newState == null)
@@ -40,8 +50,13 @@
 			// End current state if it exists
 			CurrentState.OnEndState();
 
+			// Remove the old state controller
+			CurrentState.StateController = null;
+
 			if (newState != null)
 			{
+				newState.StateController = this;
+
 				// Subscribe to the new state
 				newState.OnNextStateReady += SetState;
 

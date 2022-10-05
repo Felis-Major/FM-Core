@@ -12,9 +12,9 @@ namespace FM.Runtime.Systems.StateMachine
 		 * -------------------------- */
 
 		/// <summary>
-		/// The <see cref="StateController{T}"/> controlling this state
+		/// The <see cref="StateController{T}"/> controlling this state. This property is guaranteed to not be null when this is the current state
 		/// </summary>
-		public StateController<State> StateController { get; }
+		public StateController StateController { get; set; }
 
 
 		/* ==========================
@@ -25,16 +25,6 @@ namespace FM.Runtime.Systems.StateMachine
 		/// Called when the next state is ready
 		/// </summary>
 		public event Action<State> OnNextStateReady;
-
-
-		/* ==========================
-		 * > Constructor
-		 * -------------------------- */
-
-		public State(StateController<State> stateController)
-		{
-			StateController = stateController;
-		}
 
 
 		/* ==========================
