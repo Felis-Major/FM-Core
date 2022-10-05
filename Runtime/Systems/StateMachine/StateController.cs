@@ -1,11 +1,11 @@
-﻿using System;
+﻿using UnityEngine;
 
 namespace FM.Runtime.Systems.StateMachine
 {
 	/// <summary>
 	/// Base class for a state controller
 	/// </summary>
-	public abstract class StateController
+	public abstract class StateController : MonoBehaviour
 	{
 		public abstract void SetState(State newState);
 	}
