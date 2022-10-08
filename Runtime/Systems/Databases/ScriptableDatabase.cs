@@ -35,6 +35,13 @@ public class ScriptableDatabase<T> : ScriptableObject where T : DatabaseItem
 
 	private void BuildItemList()
 	{
+		if (_items == null)
+		{
+			return;
+		}
+
+		_guidItems = new Dictionary<string, T>();
+
 		for (var i = 0; i < _items.Length; i++)
 		{
 			T item = _items[i];
