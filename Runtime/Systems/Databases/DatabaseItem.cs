@@ -1,4 +1,5 @@
-﻿using FM.Runtime.Helpers.GUIDSystem;
+﻿using System.Collections.Generic;
+using FM.Runtime.Helpers.GUIDSystem;
 using UnityEngine;
 
 public class DatabaseItem : ScriptableObject

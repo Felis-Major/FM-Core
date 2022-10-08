@@ -4,7 +4,41 @@ using UnityEngine;
 
 public class ScriptableDatabase<T> : ScriptableObject where T : DatabaseItem
 {
-	[SerializeField]
-	private List<T> _items = new List<T>();
+	public T this[string guid]
+	{
+		get
+		{
+			// If both databases don't have the same content
+			if (_guidItems.Count != _items.Length)
+			{
+				BuildItemList();
+			}
 
+			return _guidItems[guid];
+		}
+	}
+
+	[SerializeField]
+	private T[] _items;
+
+	private Dictionary<string, T> _guidItems = new Dictionary<string, T>();
+
+	private void OnEnable()
+	{
+		BuildItemList();
+	}
+
+	private void OnDisable()
+	{
+		_guidItems.Clear();
+	}
+
+	private void BuildItemList()
+	{
+		for (var i = 0; i < _items.Length; i++)
+		{
+			T item = _items[i];
+			_guidItems.Add(item.GUID, item);
+		}
+	}
 }
