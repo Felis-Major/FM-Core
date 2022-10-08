@@ -1,7 +1,7 @@
 ﻿using FM.Runtime.Helpers.GUIDSystem;
 using UnityEngine;
 
-public class DatabaseItem
+public class DatabaseItem : ScriptableObject
 {
 	public string GUID => _guid;
 
