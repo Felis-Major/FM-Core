@@ -37,7 +37,7 @@ namespace FM.Runtime.Systems.Save
 				for (var i = 0; i < data.Count; i++)
 				{
 					DataBlock dataBlock = data[i];
-					SetData(dataBlock.ID, DeserializeData<string>(dataBlock.SerializedData));
+					SetSerializedData(dataBlock.ID, dataBlock.SerializedData);
 				}
 			}
 		}
