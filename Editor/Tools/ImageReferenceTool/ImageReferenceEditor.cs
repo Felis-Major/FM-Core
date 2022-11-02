@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -15,7 +16,14 @@ public class ImageReferenceEditor : Editor
 
 	public override VisualElement CreateInspectorGUI()
 	{
-		VisualTreeAsset editorTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/FM-Core/Editor/Tools/ImageReferenceTool/ImageReferenceEditorTemplate.uxml");
+		// Build path to the local asset
+		var currentObject = MonoScript.FromScriptableObject(this);
+		string path = AssetDatabase.GetAssetPath(currentObject);
+		string currentObjectName = $"{currentObject.name}.cs";
+		string newObjectName = "ImageReferenceEditorTemplate.uxml";
+		path = path.Replace(currentObjectName, newObjectName);
+
+		VisualTreeAsset editorTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
 
 		TemplateContainer visualTreeInstance = editorTemplate.Instantiate();
 
