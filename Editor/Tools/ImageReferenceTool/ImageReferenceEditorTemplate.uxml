@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="NoteGroup" style="flex-direction: row; justify-content: space-between;">
+        <ui:Label text="Note Editor" display-tooltip-when-elided="true" focusable="true" name="Label" style="justify-content: flex-start; align-items: auto; -unity-font-style: bold; font-size: 12px; -unity-text-align: middle-left;" />
+        <ui:Button text="Edit..." display-tooltip-when-elided="true" name="EditButton" style="opacity: 1; height: 19px; align-items: auto; flex-basis: 80px;" />
+    </ui:VisualElement>
+    <ui:TextField picking-mode="Ignore" text="filler text" multiline="true" readonly="false" name="NotesTextField" style="height: auto; white-space: normal;" />
+    <ui:VisualElement name="LinksGroup" style="flex-direction: row; justify-content: space-between; margin-top: 10px;">
+        <ui:Label text="Reference Editor" display-tooltip-when-elided="true" focusable="true" name="Label" style="justify-content: flex-start; align-items: auto; -unity-font-style: bold; font-size: 12px; -unity-text-align: middle-left;" />
+        <ui:Button text="Redraw" display-tooltip-when-elided="true" name="RedrawButton" style="opacity: 1; height: 19px; align-items: auto; flex-basis: 80px;" />
+        <ui:Button text="Open All..." display-tooltip-when-elided="true" name="OpenLinksButton" style="opacity: 1; height: 19px; align-items: auto; flex-basis: 80px;" />
+    </ui:VisualElement>
+    <uie:PropertyField label="Links" name="LinksProperty" />
+    <ui:ListView focusable="true" name="ImageList" selection-type="None" virtualization-method="FixedHeight" show-border="false" show-alternating-row-backgrounds="None" fixed-item-height="250" style="margin-top: 20px;" />
+</ui:UXML>

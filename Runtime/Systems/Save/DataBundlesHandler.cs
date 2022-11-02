@@ -18,9 +18,9 @@ namespace FM.Runtime.Systems.Save
 			List<DataBundle> dataBundles = new();
 
 			// Find all the objects that are databundles and cache them into a list
-			for (var i = 0; i < objects.Length; i++)
+			for (int i = 0; i < objects.Length; i++)
 			{
-				var obj = objects[i];
+				object obj = objects[i];
 				if (obj is DataBundle saveableAsset)
 				{
 					dataBundles.Add(saveableAsset);
@@ -44,13 +44,13 @@ namespace FM.Runtime.Systems.Save
 			wasFileCreated = false;
 
 			// Find the path of the file
-			var fileDirectory = $"{Application.persistentDataPath}/{SaveableAssetLocation}/";
+			string fileDirectory = $"{Application.persistentDataPath}/{SaveableAssetLocation}/";
 			filePath = Path.Combine(fileDirectory, fileName);
 
 			// Evaluate directories
-			var doesDirectoryExist = Directory.Exists(fileDirectory);
-			var doesFileExist = File.Exists($"{fileDirectory}/{fileName}");
-			var shouldCreateFile = !(doesDirectoryExist && doesFileExist);
+			bool doesDirectoryExist = Directory.Exists(fileDirectory);
+			bool doesFileExist = File.Exists($"{fileDirectory}/{fileName}");
+			bool shouldCreateFile = !(doesDirectoryExist && doesFileExist);
 
 			// Create path if it doesn't already exist
 			if (shouldCreateFile)
@@ -62,39 +62,42 @@ namespace FM.Runtime.Systems.Save
 			}
 		}
 
+#if UNITY_EDITOR
 		[MenuItem("Felis Major/Load")]
+#endif
 		public static void Load()
 		{
 			// Load all scriptables from resources
 			DataBundle[] dataBundles = GetAllDataBundles();
 
-			for (var i = 0; i < dataBundles.Length; i++)
+			for (int i = 0; i < dataBundles.Length; i++)
 			{
-				GetFilePath(dataBundles[i].FileName, out var filePath, out _);
+				GetFilePath(dataBundles[i].FileName, out string filePath, out _);
 				dataBundles[i].Load(filePath);
 			}
 		}
 
+#if UNITY_EDITOR
 		[MenuItem("Felis Major/Save")]
+#endif
 		public static void Save()
 		{
 			// save all scriptables in resources
 			DataBundle[] dataBundles = GetAllDataBundles();
 
-			for (var i = 0; i < dataBundles.Length; i++)
+			for (int i = 0; i < dataBundles.Length; i++)
 			{
-				GetFilePath(dataBundles[i].FileName, out var filePath, out _);
+				GetFilePath(dataBundles[i].FileName, out string filePath, out _);
 				dataBundles[i].Save(filePath);
 			}
 		}
 
 #if UNITY_EDITOR
-
 		[MenuItem("Felis Major/Open persistent data path...")]
 		public static void OpenPersistentDataPath()
 		{
 			// fix this
-			var saveDirectory = $"{Application.persistentDataPath}/{SaveableAssetLocation}/";
+			string saveDirectory = $"{Application.persistentDataPath}/{SaveableAssetLocation}/";
 			UnityEngine.Debug.Log(saveDirectory);
 			Process.Start("explorer.exe", saveDirectory);
 		}
