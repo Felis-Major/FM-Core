@@ -45,6 +45,7 @@ namespace FM.Editor.Tools
 		public void SnapSelectedToGround()
 		{
 			Transform[] currentSelection = Selection.transforms;
+			Undo.RecordObjects(currentSelection, "Undo snap to ground");
 			for (int i = 0; i < currentSelection.Length; i++)
 			{
 				Transform obj = currentSelection[i];
