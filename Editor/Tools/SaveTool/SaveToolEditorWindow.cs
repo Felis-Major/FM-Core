@@ -45,13 +45,15 @@ public class SaveToolEditorWindow : EditorWindow
 			EditorPrefs.SetBool("isSaveOnPlayEnabled", x.newValue);
 		});
 
-		//// Auto save
-		//Toggle autoSaveToggle = rootVisualElement.Q<Toggle>("AutoSaveToggle");
+		// Auto save
+		Toggle autoSaveToggle = rootVisualElement.Q<Toggle>("AutoSaveToggle");
+		autoSaveToggle.SetEnabled(false);
 		//_isAutoSaveEnabled = autoSaveToggle.value;
 		//autoSaveToggle.RegisterValueChangedCallback(x => _isAutoSaveEnabled = x.newValue);
 
-		//// Save interval
-		//SliderInt saveIntervalSlider = rootVisualElement.Q<SliderInt>("SaveIntervalSlider");
+		// Save interval
+		SliderInt saveIntervalSlider = rootVisualElement.Q<SliderInt>("SaveIntervalSlider");
+		saveIntervalSlider.SetEnabled(false);
 		//_saveInterval = saveIntervalSlider.value;
 		//saveIntervalSlider.RegisterValueChangedCallback(x => _saveInterval = x.newValue);
 
