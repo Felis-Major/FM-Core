@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace FM.Runtime.References
 {
@@ -24,7 +26,27 @@ namespace FM.Runtime.References
          * > Private Fields
          * -------------------------- */
 
-		private List<GameObject> _targets = new List<GameObject>();
+		private List<GameObject> _targets = new();
+
+
+		/* ==========================
+		 * > Events
+		 * -------------------------- */
+
+		/// <summary>
+		/// Called when a new <see cref="GameObject"/> is added to this runtime reference 
+		/// </summary>
+		public event Action<GameObject> OnTargetAdded;
+
+		/// <summary>
+		/// Called when a new <see cref="GameObject"/> is removed to this runtime reference 
+		/// </summary>
+		public event Action<GameObject> OnTargetRemoved;
+
+		/// <summary>
+		/// Called when changes happened in the <see cref="RuntimeReferenceMultiple"/>
+		/// </summary>
+		public event Action OnRuntimeReferenceModified;
 
 
 		/* ==========================
@@ -43,6 +65,8 @@ namespace FM.Runtime.References
 			if (!_targets.Contains(target))
 			{
 				_targets.Add(target);
+				OnTargetAdded?.Invoke(target);
+				OnRuntimeReferenceModified?.Invoke();
 			}
 		}
 
@@ -56,6 +80,8 @@ namespace FM.Runtime.References
 			if (_targets.Contains(target))
 			{
 				_targets.Remove(target);
+				OnTargetRemoved?.Invoke(target);
+				OnRuntimeReferenceModified?.Invoke();
 			}
 		}
 
@@ -73,7 +99,7 @@ namespace FM.Runtime.References
 
 			var components = new List<T>();
 
-			for (var i = 0; i < _targets.Count; i++)
+			for (int i = 0; i < _targets.Count; i++)
 			{
 				T component = _targets[i].GetComponent<T>();
 				if (component != null)
