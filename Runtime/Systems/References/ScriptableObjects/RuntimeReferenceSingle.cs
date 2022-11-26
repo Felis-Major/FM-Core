@@ -15,19 +15,12 @@ namespace FM.Runtime.References
 		/// <summary>
 		/// <inheritdoc/>
 		/// </summary>
-		public override bool IsLoaded => _target != null;
+		public override bool IsLoaded => Target != null;
 
 		/// <summary>
 		/// Reference target
 		/// </summary>
-		public GameObject Target => _target;
-
-
-		/* ==========================
-         * > Private Fields
-         * -------------------------- */
-
-		private GameObject _target = null;
+		public GameObject Target { get; private set; } = null;
 
 
 		/* ==========================
@@ -40,7 +33,7 @@ namespace FM.Runtime.References
 		public override void Add(GameObject target)
 		{
 			base.Add(target);
-			_target = target;
+			Target = target;
 		}
 
 		/// <summary>
@@ -49,7 +42,7 @@ namespace FM.Runtime.References
 		public override void Remove(GameObject target)
 		{
 			base.Remove(target);
-			_target = null;
+			Target = null;
 		}
 
 		/// <summary>
@@ -57,18 +50,9 @@ namespace FM.Runtime.References
 		/// </summary>
 		/// <typeparam name="T">Component Type</typeparam>
 		/// <returns>Reference as T</returns>
-		public T Get<T>() where T : Object
+		public T Get<T>()
 		{
-			if (_target != null)
-			{
-				T component = _target.GetComponent<T>();
-				if (component != null)
-				{
-					return component;
-				}
-			}
-
-			return null;
+			return Target != null && Target.TryGetComponent(out T component) ? component : default;
 		}
 	}
 }

@@ -1,54 +1,61 @@
-﻿using FM.Runtime.Systems.Events;
+﻿using System;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using FM.Runtime.Systems.Events;
+using NUnit.Framework.Internal;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace FM.Editor.Events
 {
-    [CustomEditor(typeof(EventReceiver), true)]
-    public class EventReceiverEditor : UnityEditor.Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            var t = (EventReceiver)target;
+	[CustomEditor(typeof(EventReceiver), true)]
+	public class EventReceiverEditor : UnityEditor.Editor
+	{
+		private const string EventTitleColor = "#6bce7b";
+		private const string EventDescriptionColor = "#5f8c48";
+		private const string UnassignedEventColor = "#f43a72";
 
-            string text = "";
-            string color = "#97f229";
-            GUIStyle descriptionStyle = new GUIStyle();
-            descriptionStyle.richText = true;
-            descriptionStyle.fontSize = 14;
+		public override void OnInspectorGUI()
+		{
+			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            GUIStyle eventNameStyle = new GUIStyle();
-            eventNameStyle.richText = true;
-            eventNameStyle.fontSize = 16;
+			var t = (EventReceiver)target;
 
-            if (t.Event != null)
-            {
-                string eventFriendlyName = Regex.Replace(t.Event.name, "([a-z])([A-Z])", "$1 $2");
+			string text;
+			string color = EventDescriptionColor;
+			var descriptionStyle = new GUIStyle();
+			descriptionStyle.richText = true;
+			descriptionStyle.fontSize = 14;
 
-                EditorGUILayout.LabelField($"<color=#3afff5><b>{eventFriendlyName}</b></color>", eventNameStyle);
+			var eventNameStyle = new GUIStyle();
+			eventNameStyle.richText = true;
+			eventNameStyle.fontSize = 16;
 
+			if (t.Event != null)
+			{
+				string eventFriendlyName = Regex.Replace(t.Event.name, "([a-z])([A-Z])", "$1 $2");
 
-                if (!string.IsNullOrEmpty(t.Event.Description))
-                {
-                    text = t.Event.Description;
-                }
-                else
-                {
-                    text = "No Description...";
-                }
-            }
-            else
-            {
-                color = "#f43a72";
-                text = "No event assigned";
-            }
+				EditorGUILayout.LabelField($"<color={EventTitleColor}><b>{eventFriendlyName}</b></color>", eventNameStyle);
 
-            EditorGUILayout.LabelField($"<color={color}><b>{text}</b></color>", descriptionStyle);
+				text = !string.IsNullOrEmpty(t.Event.Description) ? t.Event.Description : "No Description...";
+			}
+			else
+			{
+				color = UnassignedEventColor;
+				text = "No event assigned";
+			}
 
-            EditorGUILayout.Space();
+			EditorGUILayout.LabelField($"<color={color}><b>{text}</b></color>", descriptionStyle);
 
-            base.OnInspectorGUI();
-        }
-    }
+			EditorGUILayout.EndVertical();
+
+			EditorGUILayout.Space(10);
+			// Draw default inspector without the script property
+			serializedObject.Update();
+			DrawPropertiesExcluding(serializedObject, "m_Script");
+			serializedObject.ApplyModifiedProperties();
+
+		}
+	}
 }
