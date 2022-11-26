@@ -66,7 +66,7 @@ namespace FM.Runtime.Systems.Events
         protected virtual void OnEventReceived(TValue value)
         {
             // If there are values to filter
-            if (_filteredValues.Length > 0)
+            if (_filteredValues != null && _filteredValues.Length > 0)
             {
                 // Find a matching value in the filter list
                 for (int i = 0; i < _filteredValues.Length; i++)
