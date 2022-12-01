@@ -12,7 +12,7 @@ namespace FM.Runtime.Helpers.Random
 		* > Private Fields
 		* -------------------------- */
 
-		protected List<IWeightedItem<T>> _items = new();
+		protected List<WeightedItem<T>> _items = new();
 
 
 		/* ==========================
@@ -22,28 +22,28 @@ namespace FM.Runtime.Helpers.Random
 		#region Add & Remove
 
 		/// <summary>
-		/// Add a new <see cref="IWeightedItem{T}"/> to the <see cref="RandomSelector{T}"/>
+		/// Add a new <see cref="WeightedItem{T}"/> to the <see cref="RandomSelector{T}"/>
 		/// </summary>
 		/// <param name="entry">Weighted Item</param>
-		public void AddEntry(IWeightedItem<T> entry)
+		public void AddEntry(WeightedItem<T> entry)
 		{
 			_items.Add(entry);
 		}
 
 		/// <summary>
-		/// Add multiple <see cref="IWeightedItem{T}"/> to the <see cref="RandomSelector{T}"/>
+		/// Add multiple <see cref="WeightedItem{T}"/> to the <see cref="RandomSelector{T}"/>
 		/// </summary>
 		/// <param name="entries">Weighted Items</param>
-		public void AddEntries(IWeightedItem<T>[] entries)
+		public void AddEntries(WeightedItem<T>[] entries)
 		{
 			_items.AddRange(entries);
 		}
 
 		/// <summary>
-		/// Remove a <see cref="IWeightedItem{T}"/> from the <see cref="RandomSelector{T}"/>
+		/// Remove a <see cref="WeightedItem{T}"/> from the <see cref="RandomSelector{T}"/>
 		/// </summary>
 		/// <param name="entry">Weighted Item</param>
-		public void RemoveEntry(IWeightedItem<T> entry)
+		public void RemoveEntry(WeightedItem<T> entry)
 		{
 			_items.Remove(entry);
 		}

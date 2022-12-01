@@ -3,7 +3,7 @@
 namespace FM.Runtime.Helpers.Random
 {
 	/// <summary>
-	/// Handles selecting a random <see cref="IWeightedItem{T}"/> from a list using chances
+	/// Handles selecting a random <see cref="WeightedItem{T}"/> from a list using chances
 	/// </summary>
 	/// <typeparam name="T">Value of the item</typeparam>
 	public class ProbabilisticRandomSelector<T> : RandomSelector<T>
@@ -44,7 +44,7 @@ namespace FM.Runtime.Helpers.Random
 			for (int i = 0; i < _items.Count; i++)
 			{
 				float randomChance = UnityEngine.Random.value * _scale;
-				IWeightedItem<T> item = _items[i];
+				WeightedItem<T> item = _items[i];
 				if (randomChance <= item.Weight)
 				{
 					selectedItems.Add(item.Value);

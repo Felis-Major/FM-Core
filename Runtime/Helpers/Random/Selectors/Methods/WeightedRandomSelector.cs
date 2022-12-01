@@ -1,7 +1,7 @@
 ﻿namespace FM.Runtime.Helpers.Random
 {
 	/// <summary>
-	/// Handles selecting a random <see cref="IWeightedItem{T}"/> from a list using weights
+	/// Handles selecting a random <see cref="WeightedItem{T}"/> from a list using weights
 	/// </summary>
 	/// <typeparam name="T">Value of the item</typeparam>
 	public class WeightedRandomSelector<T> : RandomSelector<T>
@@ -31,7 +31,7 @@
 			// Find the item that was selected
 			for (int i = 0; i < _items.Count; i++)
 			{
-				IWeightedItem<T> item = _items[i];
+				WeightedItem<T> item = _items[i];
 				j += item.Weight;
 
 				if (j > randomIndex)

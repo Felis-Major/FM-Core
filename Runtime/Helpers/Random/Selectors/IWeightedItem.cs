@@ -1,25 +1,34 @@
 ﻿namespace FM.Runtime.Helpers.Random
 {
     /// <summary>
-    /// Base class for a weighted item
+    /// Item that can be randomly picked using its weight
     /// </summary>
-    public interface IWeightedItem
+    /// <typeparam name="T">Value type of the item</typeparam>
+    public struct WeightedItem<T>
     {
+        /* ==========================
+         * > Properties
+         * -------------------------- */
+
         /// <summary>
         /// Weight of the item
         /// </summary>
-        int Weight { get; }
-    }
+        public int Weight { get; }
 
-    /// <summary>
-    /// Interface for an item that can be randomly picked using weight
-    /// </summary>
-    /// <typeparam name="T">Value of the item</typeparam>
-    public interface IWeightedItem<T> : IWeightedItem
-    {
         /// <summary>
         /// Value of the item
         /// </summary>
-        T Value { get; }
+        public T Value { get; }
+
+
+        /* ==========================
+         * > Constructor
+         * -------------------------- */
+
+        public WeightedItem(int weight, T value)
+        {
+            Weight = weight;
+            Value = value;
+        }
     }
 }
