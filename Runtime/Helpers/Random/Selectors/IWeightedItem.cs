@@ -4,7 +4,7 @@
     /// Item that can be randomly picked using its weight
     /// </summary>
     /// <typeparam name="T">Value type of the item</typeparam>
-    public struct WeightedItem<T>
+    public class WeightedItem<T>
     {
         /* ==========================
          * > Properties
