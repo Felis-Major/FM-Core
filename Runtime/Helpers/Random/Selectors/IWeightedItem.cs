@@ -13,12 +13,12 @@
         /// <summary>
         /// Weight of the item
         /// </summary>
-        public int Weight { get; }
+        public virtual int Weight { get; }
 
         /// <summary>
         /// Value of the item
         /// </summary>
-        public T Value { get; }
+        public virtual T Value { get; }
 
 
         /* ==========================

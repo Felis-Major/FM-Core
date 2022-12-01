@@ -90,7 +90,7 @@ namespace FM.Runtime.References
 		/// </summary>
 		/// <typeparam name="T">Component Type</typeparam>
 		/// <returns>List of T</returns>
-		public T[] Get<T>() where T : Object
+		public T[] Get<T>()
 		{
 			if (_targets.Count == 0)
 			{

@@ -1,6 +1,6 @@
 {
   "name": "com.felismajor.core",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "displayName": "FM Core",
   "description": "Various Unity helpers and systems that can be used in most game projects",
   "unity": "2021.3",
