@@ -106,8 +106,8 @@ namespace FM.Runtime.Core.DataManagement
 		/// <returns>True if a value was found for the <paramref name="key"/></returns>
 		public static bool GetValue<T>(string key, out T value)
 		{
-			bool wasDataFound = _savedKeys.TryGetValue(key, out object v);
-			value = (T)Convert.ChangeType(v, typeof(T));
+			bool wasDataFound = _savedKeys.TryGetValue(key, out object savedValue);
+			value = savedValue == null ? default : (T)Convert.ChangeType(savedValue, typeof(T));
 			return wasDataFound;
 		}
 
