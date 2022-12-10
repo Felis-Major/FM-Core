@@ -111,6 +111,15 @@ namespace FM.Runtime.Core.DataManagement
 			return wasDataFound;
 		}
 
+		/// <summary>
+		/// Removes a value from the runtime saved data
+		/// </summary>
+		/// <param name="key">ID of the value to remove</param>
+		public static void ClearValue(string key)
+		{
+			_savedKeys.Remove(key);
+		}
+
 		#endregion
 	}
 }
