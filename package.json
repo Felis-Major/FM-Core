@@ -4,9 +4,9 @@
   "displayName": "FM Core",
   "description": "Core Unity helpers library",
   "unity": "2021.3",
-  "unityRelease": "11f1",
+  "unityRelease": "0b5",
   "dependencies": {
-	"com.unity.nuget.newtonsoft-json": "3.0.2",
+	
   },
   "author": {
     "name": "Felis Major",
