@@ -29,13 +29,13 @@ namespace FM.Runtime.Core.DataManagement
 		/// <summary>
 		/// Called when the data is saved
 		/// </summary>
-		/// <remarks>Is called when the async <see cref="Save"/> method is done</remarks>
+		/// <remarks>Is called when the async <see cref="SaveAsync"/> method is done</remarks>
 		public static event Action OnDataSaved;
 
 		/// <summary>
 		/// Called when the data is loaded
 		/// </summary>
-		/// <remarks>Is called from the async <see cref="Load"/> method is done</remarks>
+		/// <remarks>Is called from the async <see cref="LoadAsync"/> method is done</remarks>
 		public static event Action OnDataLoaded;
 
 
@@ -46,12 +46,23 @@ namespace FM.Runtime.Core.DataManagement
 		#region File IO
 
 		/// <summary>
+		/// Save data to a file
+		/// </summary>
+		public static void Save()
+		{
+			string jsonData = JsonConvert.SerializeObject(_savedKeys, Formatting.Indented);
+
+			// Write to file
+			File.WriteAllText(Application.persistentDataPath + "/save.json", jsonData);
+		}
+
+		/// <summary>
 		/// Asynchronously save data to a file
 		/// </summary>
 #if UNITY_EDITOR
 		[MenuItem("Felis Major/Data Management/Save")]
 #endif
-		public static async void Save()
+		public static async void SaveAsync()
 		{
 			string jsonData = JsonConvert.SerializeObject(_savedKeys, Formatting.Indented);
 
@@ -62,12 +73,29 @@ namespace FM.Runtime.Core.DataManagement
 		}
 
 		/// <summary>
+		/// Load data from a file
+		/// </summary>
+		public static void Load()
+		{
+			// Load from file
+			if (File.Exists(Application.persistentDataPath + "/save.json"))
+			{
+				string json = File.ReadAllText(Application.persistentDataPath + "/save.json");
+				_savedKeys = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+			}
+			else
+			{
+				_savedKeys = new Dictionary<string, object>();
+			}
+		}
+
+		/// <summary>
 		/// Asynchronously load data from a file
 		/// </summary>
 #if UNITY_EDITOR
 		[MenuItem("Felis Major/Data Management/Load")]
 #endif
-		public static async void Load()
+		public static async void LoadAsync()
 		{
 			// Load from file
 			if (File.Exists(Application.persistentDataPath + "/save.json"))
