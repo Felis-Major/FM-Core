@@ -1,15 +1,16 @@
 {
   "name": "com.felismajor.core",
-  "version": "1.4.6",
+  "version": "1.5.0",
   "displayName": "FM Core",
-  "description": "Various Unity helpers and systems that can be used in most game projects",
+  "description": "Core Unity helpers library",
   "unity": "2021.3",
-  "unityRelease": "0b5",
+  "unityRelease": "11f1",
   "dependencies": {
+	"com.unity.nuget.newtonsoft-json": "3.0.2",
  },
   "author": {
     "name": "Felis Major",
     "email": "robert.edilber@pm.me",
-    "url": "https://github.com/Felis-Major"
+    "url": "https://www.felismajor.com"
   }
 }

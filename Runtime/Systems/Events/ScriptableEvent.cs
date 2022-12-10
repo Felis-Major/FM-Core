@@ -43,7 +43,7 @@ namespace FM.Runtime.Systems.Events
         /// <param name="scriptableEvent">Scriptable event to be raised</param>
         public static void RaiseEvent(ScriptableEvent scriptableEvent)
         {
-            if(scriptableEvent != null)
+            if (scriptableEvent != null)
             {
                 scriptableEvent.Raise();
             }
@@ -64,6 +64,9 @@ namespace FM.Runtime.Systems.Events
         /// <summary>
         /// Raise void event
         /// </summary>
+#if UNITY_EDITOR
+        [ContextMenu("Raise Event")]
+#endif
         public virtual void Raise()
         {
             OnEventRaised?.Invoke();
@@ -96,7 +99,7 @@ namespace FM.Runtime.Systems.Events
         /// </summary>
         protected async void SustainEvent()
         {
-            await Task.Yield(); 
+            await Task.Yield();
             OnEventExpired();
         }
 
