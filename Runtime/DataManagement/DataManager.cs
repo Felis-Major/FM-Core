@@ -135,7 +135,7 @@ namespace FM.Runtime.Core.DataManagement
 		public static bool GetValue<T>(string key, out T value)
 		{
 			bool wasDataFound = _savedKeys.TryGetValue(key, out object savedValue);
-			value = savedValue == null ? default : (T)Convert.ChangeType(savedValue, typeof(T));
+			value = savedValue is IConvertible ? savedValue == null ? default : (T)Convert.ChangeType(savedValue, typeof(T)) : (T)savedValue;
 			return wasDataFound;
 		}
 
