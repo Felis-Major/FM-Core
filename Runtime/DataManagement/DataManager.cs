@@ -4,6 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -16,6 +17,13 @@ namespace FM.Runtime.Core.DataManagement
 	/// </summary>
 	public static class DataManager
 	{
+		/* ==========================
+		 * > Properties
+		 * -------------------------- */
+
+		public static string PersistentDataFilePath => Application.persistentDataPath + "/save.json";
+
+
 		/* ==========================
 		 * > Private Fields
 		 * -------------------------- */
@@ -44,7 +52,16 @@ namespace FM.Runtime.Core.DataManagement
 		 * > Methods
 		 * -------------------------- */
 
-		#region File IO
+		#region Save & Load
+
+		/// <summary>
+		/// Save data to a file
+		/// </summary>
+		public static void Save()
+		{
+			string jsonData = Serialize(_savedKeys);
+			File.WriteAllText(PersistentDataFilePath, jsonData);
+		}
 
 		/// <summary>
 		/// Asynchronously save data to a file
@@ -54,12 +71,25 @@ namespace FM.Runtime.Core.DataManagement
 #endif
 		public static async void SaveAsync()
 		{
-			string jsonData = JsonConvert.SerializeObject(_savedKeys, Formatting.Indented);
-
-			// Write to file
-			await File.WriteAllTextAsync(Application.persistentDataPath + "/save.json", jsonData);
-
+			string jsonData = Serialize(_savedKeys);
+			await File.WriteAllTextAsync(PersistentDataFilePath, jsonData);
 			OnDataSaved?.Invoke();
+		}
+
+		/// <summary>
+		/// Load data from a file
+		/// </summary>
+		public static void Load()
+		{
+			if (File.Exists(PersistentDataFilePath))
+			{
+				string json = File.ReadAllText(PersistentDataFilePath);
+				_savedKeys = Deserialize<Dictionary<string, object>>(json);
+			}
+			else
+			{
+				_savedKeys = new Dictionary<string, object>();
+			}
 		}
 
 		/// <summary>
@@ -70,12 +100,10 @@ namespace FM.Runtime.Core.DataManagement
 #endif
 		public static async void LoadAsync()
 		{
-			// Load from file
-			if (File.Exists(Application.persistentDataPath + "/save.json"))
+			if (File.Exists(PersistentDataFilePath))
 			{
-				string json = await File.ReadAllTextAsync(Application.persistentDataPath + "/save.json");
-
-				_savedKeys = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+				string json = await File.ReadAllTextAsync(PersistentDataFilePath);
+				_savedKeys = Deserialize<Dictionary<string, object>>(json);
 			}
 			else
 			{
@@ -86,6 +114,7 @@ namespace FM.Runtime.Core.DataManagement
 		}
 
 		#endregion
+
 
 		#region Runtime Data
 
@@ -136,6 +165,33 @@ namespace FM.Runtime.Core.DataManagement
 		public static void ClearValue(string key)
 		{
 			_savedKeys.Remove(key);
+		}
+
+		#endregion
+
+
+		#region	Helpers
+
+		/// <summary>
+		/// Serialize data using the default <see cref="JsonConverter"/>
+		/// </summary>
+		/// <typeparam name="T">Type of data to serialize</typeparam>
+		/// <param name="data">Data instance to serialize</param>
+		/// <returns>Serialized data as json <see cref="string"/></returns>
+		private static string Serialize<T>(T data)
+		{
+			return JsonConvert.SerializeObject(data, Formatting.Indented);
+		}
+
+		/// <summary>
+		/// Deserialize a json <see cref="string"/> into <typeparamref name="T"/>
+		/// </summary>
+		/// <typeparam name="T">Type of the serialized data</typeparam>
+		/// <param name="serializedData">Json <see cref="string"/> to deserialize</param>
+		/// <returns>Instance of the deserialized data as <typeparamref name="T"/></returns>
+		private static T Deserialize<T>(string serializedData)
+		{
+			return JsonConvert.DeserializeObject<T>(serializedData);
 		}
 
 		#endregion
