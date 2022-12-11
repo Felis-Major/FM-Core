@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -29,13 +30,13 @@ namespace FM.Runtime.Core.DataManagement
 		/// <summary>
 		/// Called when the data is saved
 		/// </summary>
-		/// <remarks>Is called when the async <see cref="Save"/> method is done</remarks>
+		/// <remarks>Is called when the async <see cref="SaveAsync"/> method is done</remarks>
 		public static event Action OnDataSaved;
 
 		/// <summary>
 		/// Called when the data is loaded
 		/// </summary>
-		/// <remarks>Is called from the async <see cref="Load"/> method is done</remarks>
+		/// <remarks>Is called from the async <see cref="LoadAsync"/> method is done</remarks>
 		public static event Action OnDataLoaded;
 
 
@@ -51,7 +52,7 @@ namespace FM.Runtime.Core.DataManagement
 #if UNITY_EDITOR
 		[MenuItem("Felis Major/Data Management/Save")]
 #endif
-		public static async void Save()
+		public static async void SaveAsync()
 		{
 			string jsonData = JsonConvert.SerializeObject(_savedKeys, Formatting.Indented);
 
@@ -67,12 +68,13 @@ namespace FM.Runtime.Core.DataManagement
 #if UNITY_EDITOR
 		[MenuItem("Felis Major/Data Management/Load")]
 #endif
-		public static async void Load()
+		public static async void LoadAsync()
 		{
 			// Load from file
 			if (File.Exists(Application.persistentDataPath + "/save.json"))
 			{
 				string json = await File.ReadAllTextAsync(Application.persistentDataPath + "/save.json");
+
 				_savedKeys = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 			}
 			else
@@ -108,15 +110,17 @@ namespace FM.Runtime.Core.DataManagement
 		{
 			if (_savedKeys.TryGetValue(key, out object savedValue))
 			{
-				if (savedValue is IConvertible)
+				value = savedValue switch
 				{
-					value = savedValue == null ? default : (T)Convert.ChangeType(savedValue, typeof(T));
-				}
-				else
-				{
-					object boxedSaveValue = savedValue;
-					value = (T)boxedSaveValue;
-				}
+					// Convert immediately if it implements IConvertible
+					IConvertible => (T)Convert.ChangeType(savedValue, typeof(T)),
+
+					// Convert to object if it's a JToken
+					JToken jToken => jToken.ToObject<T>(),
+
+					// Don't handle other types
+					_ => throw new ArgumentException($"Key {key} was deserialized as an unsupported type: {savedValue.GetType()}."),
+				};
 
 				return true;
 			}
