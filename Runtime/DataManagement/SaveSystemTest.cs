@@ -1,50 +1,32 @@
-using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace FM.Runtime.Core.DataManagement
 {
 	public class SaveSystemTest : MonoBehaviour
 	{
-		public class TestClass
-		{
-			public string ohWow = "aaaaa";
-			public int wwwww = 81;
-
-			public override string ToString()
-			{
-				return ohWow.ToString() + " " + wwwww.ToString();
-			}
-		}
-
 		[ContextMenu("test")]
 		private void Test()
 		{
-			object[] sourceData = new object[] { "test", 54, new string[] { "hello", "222" }, new TestClass() };
-			var types = new Type[] { typeof(string), typeof(int), typeof(string[]), typeof(TestClass) };
+			DataManager.Clear();
+			DataManager.SetValue("global", "a", "global");
+			DataManager.SetValue("settings", "b", "settings");
+			DataManager.SetValue("dialogues", "c", "dialogues");
+			DataManager.SetValue("dialogues", "d", "a");
+			DataManager.SetValue("dialogues", "e", "aaa");
+			DataManager.SetValue("dialogues", "f", "aaaaa");
 
-			string json = JsonConvert.SerializeObject(sourceData);
-			print(json);
+			DataManager.Save();
 
-			object deserializedData = JsonConvert.DeserializeObject<object[]>(json);
+			DataManager.Load();
 
-			object[] array = deserializedData as object[];
+			DataManager.GetValue("global", "a", out string global);
+			Debug.Log(global);
 
-			for (int i = 0; i < array.Length; i++)
-			{
-				object data = array[i];
+			DataManager.GetValue("settings", "b", out string settings);
+			Debug.Log(settings);
 
-				// If the data can be converted directly
-				object convertedData = data switch
-				{
-					IConvertible => Convert.ChangeType(data, types[i]),
-					JToken jToken => jToken.ToObject(types[i]),
-					_ => default,
-				};
-
-				Debug.Log(convertedData.GetType() + " " + convertedData.ToString());
-			}
+			DataManager.GetValue("dialogues", "c", out string dialogues);
+			Debug.Log(dialogues);
 		}
 	}
 }
