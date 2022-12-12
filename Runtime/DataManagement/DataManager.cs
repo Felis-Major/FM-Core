@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using FM.Runtime.Core.Coroutines;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-
-#if UNITY_EDITOR
-#endif
 
 namespace FM.Runtime.Core.DataManagement
 {
@@ -88,13 +88,30 @@ namespace FM.Runtime.Core.DataManagement
 		/// </summary>
 		private const string GlobalSaveFileName = "Global" + SaveFileExtension;
 
+		/// <summary>
+		/// Path relative to the persistent data path where the DataManager saves files
+		/// </summary>
+		private const string DataPath = "Data";
+
+		/// <summary>
+		/// Name of the default user slot
+		/// </summary>
+		private const string DefaultUserSlot = "_Default";
+
+
+		/* ==========================
+		 * > Properties
+		 * -------------------------- */
+
+		public static string UserSlot { get; set; }
+
 
 		/* ==========================
 		 * > Private Fields
 		 * -------------------------- */
 
 		private static Dictionary<DataKey, object> _savedData = new();  // Dictionary containing all the saved data
-		private static readonly string persistentDataFilePath;          // Path of the persistent data folder
+		private static readonly string _persistentDataFilePath;         // Path of the persistent data folder
 
 
 		/* ==========================
@@ -120,8 +137,9 @@ namespace FM.Runtime.Core.DataManagement
 
 		static DataManager()
 		{
-			// Cache persistent data path to use in other threads
-			persistentDataFilePath = Application.persistentDataPath;
+			// Cache persistent data path to use in async operations
+			_persistentDataFilePath = Application.persistentDataPath;
+			UserSlot = DefaultUserSlot;
 		}
 
 
@@ -133,108 +151,117 @@ namespace FM.Runtime.Core.DataManagement
 
 		/// <summary>
 		/// Save data to a file
-		/// </summary>
+		/// </summary>	
+		/// <remarks>This method runs and wait for <see cref="SaveAsync"/> to finish. Consider using <see cref="SaveAsync"/> or <see cref="DoSave"/> directly.</remarks>
 		public static void Save()
 		{
-			// Find all possible locations
-			_savedData.GroupBy(item => item.Key.FileID);
+			var saveTask = Task.Run(SaveAsync);
+			saveTask.Wait();
+		}
 
-
-
-
-
-
-
-
-
-			// Sort dictionary by file ID
-			KeyValuePair<DataKey, object>[] sortedSaveData = _savedData.OrderBy(item => item.Key.FileID).ToArray();
-
-			// Initialize file parameters
-			var locations = new List<string>();
-			string currentFileID = string.Empty;
-			var currentFileContent = new Dictionary<string, object>();
-
-			// todo list all the possible locations, instantiate new dictionaries and populate with data + 
-
-
-
-
-			// Iterate over each data in order
-			for (int i = 0; i < sortedSaveData.Length; i++)
-			{
-				KeyValuePair<DataKey, object> dataToSave = sortedSaveData[i];
-				string fileID = dataToSave.Key.FileID;
-				string key = dataToSave.Key.Key;
-
-				// Do not support location name 
-				if (fileID == LocationFileName)
-				{
-					throw new ArgumentException($"The name {LocationFileName} cannot be used.");
-				}
-
-				// Add the data to the file content
-				currentFileContent.Add(key, dataToSave.Value);
-
-				// If we're iterating over a new type of file, or it's the last iteration
-				bool isNewFile = fileID != currentFileID;
-				bool isLastIteration = i == sortedSaveData.Length - 1;
-				if (isNewFile || isLastIteration)
-				{
-					// If there is content to save
-					if (currentFileContent.Count > 0)
-					{
-						Debug.Log(fileID + " File Content: ");
-						foreach (KeyValuePair<string, object> item in currentFileContent)
-						{
-							Debug.Log(item.Key);
-						}
-
-						// Create the path of the file to be saved
-						string filePath = BuildPath(fileID);
-
-						// Serialize data for that file only
-						string jsonData = Serialize(currentFileContent);
-
-						// Write to the file
-						File.WriteAllText(filePath, jsonData);
-
-						// Clear file content
-						currentFileContent.Clear();
-					}
-
-					// Set to the new file ID
-					currentFileID = fileID;
-					locations.Add(fileID);
-				}
-			}
-
-			// Create the locations file
-			string serializedLocations = Serialize(locations);
-			string locationFilePath = BuildPath(LocationFileName);
-			File.WriteAllText(locationFilePath, serializedLocations);
+		/// <summary>
+		/// Save data to a file
+		/// </summary>
+		/// <remarks>This method waits for the <see cref="SaveAsync"/> method to finish using a <see cref="WaitForTask"/> yield instruction</remarks>
+		/// <returns><see cref="IEnumerator"/> to be used as a <see cref="Coroutine"/></returns>
+		public static IEnumerator DoSave()
+		{
+			yield return new WaitForTask(SaveAsync());
 		}
 
 		/// <summary>
 		/// Asynchronously save data to a file
 		/// </summary>
-		public static async void SaveAsync()
+		public static async Task SaveAsync()
 		{
+			// Find all possible locations & store them inside of a lookup object
+			var locations = new List<string>();
+			ILookup<string, KeyValuePair<DataKey, object>> dataLookUp = _savedData.ToLookup(item =>
+			{
+				string fileID = item.Key.FileID;
+				if (!locations.Contains(fileID))
+				{
+					locations.Add(fileID);
+				}
 
+				return fileID;
+			});
+
+			// Create the locations file
+			string locationFilePath = BuildPath(LocationFileName, out string locationFileDirectory);
+			string serializedLocations = Serialize(locations);
+
+			// Create the directory if there isn't one 
+			if (!Directory.Exists(locationFileDirectory))
+			{
+				Directory.CreateDirectory(locationFileDirectory);
+			}
+
+			await File.WriteAllTextAsync(locationFilePath, serializedLocations);
+
+			// Create each file
+			for (int i = 0; i < locations.Count; i++)
+			{
+				string location = locations[i];
+				var fileContent = new Dictionary<string, object>();
+
+				// Add data to the file
+				foreach (KeyValuePair<DataKey, object> data in dataLookUp[location])
+				{
+					fileContent.Add(data.Key.Key, data.Value);
+				}
+
+				// Create the path of the file to be saved
+				string filePath = BuildPath(location, out string dataFileDirectory);
+
+				// Create the directory if there isn't one 
+				if (!Directory.Exists(dataFileDirectory))
+				{
+					Directory.CreateDirectory(dataFileDirectory);
+				}
+
+				// Serialize data for that file only
+				string jsonData = Serialize(fileContent);
+
+				// Write to the file
+				await File.WriteAllTextAsync(filePath, jsonData);
+			}
+
+			OnDataSaved?.Invoke();
 		}
 
 		/// <summary>
 		/// Load data from a file
 		/// </summary>
+		/// <remarks>This method runs and wait for <see cref="LoadAsync"/> to finish. Consider using <see cref="LoadAsync"/> or <see cref="DoLoad"/> directly.</remarks>
 		public static void Load()
+		{
+			var loadTask = Task.Run(LoadAsync);
+			loadTask.Wait();
+		}
+
+		/// <summary>
+		/// Load data from a file
+		/// </summary>
+		/// <remarks>This method waits for the <see cref="LoadAsync"/> method to finish using a <see cref="WaitForTask"/> yield instruction</remarks>
+		/// <returns><see cref="IEnumerator"/> to be used as a <see cref="Coroutine"/></returns>
+		public static IEnumerator DoLoad()
+		{
+			yield return new WaitForTask(LoadAsync());
+		}
+
+		/// <summary>
+		/// Asynchronously load data from a file
+		/// </summary>
+		public static async Task LoadAsync()
 		{
 			_savedData.Clear();
 
 			// Find all the locations	
-			string locationFilePath = BuildPath(LocationFileName);
+			string locationFilePath = BuildPath(LocationFileName, out string _);
 			if (File.Exists(locationFilePath))
 			{
-				string serializedLocations = File.ReadAllText(locationFilePath);
+				string serializedLocations = await File.ReadAllTextAsync(locationFilePath);
 				string[] locations = Deserialize<string[]>(serializedLocations);
 
 				for (int i = 0; i < locations.Length; i++)
@@ -242,11 +269,11 @@ namespace FM.Runtime.Core.DataManagement
 					string location = locations[i];
 
 					// Load data from the file
-					string filePath = BuildPath(location);
+					string filePath = BuildPath(location, out string _);
 
 					if (File.Exists(filePath))
 					{
-						string fileContent = File.ReadAllText(filePath);
+						string fileContent = await File.ReadAllTextAsync(filePath);
 						Dictionary<string, object> fileData = Deserialize<Dictionary<string, object>>(fileContent);
 
 						// Add each keys to the current saved data
@@ -258,25 +285,14 @@ namespace FM.Runtime.Core.DataManagement
 					}
 				}
 			}
-		}
 
-		/// <summary>
-		/// Asynchronously load data from a file
-		/// </summary>
-		public static async void LoadAsync()
-		{
-
+			OnDataLoaded?.Invoke();
 		}
 
 		#endregion
 
 
 		#region Runtime Data
-
-		public static void Clear()
-		{
-			_savedData.Clear();
-		}
 
 		/// <summary>
 		/// Set/Add a new key to the runtime saved data inside the global data file
@@ -352,9 +368,9 @@ namespace FM.Runtime.Core.DataManagement
 		/// Removes a value from the runtime saved data inside the global save file
 		/// </summary>
 		/// <param name="key">ID of the value to remove</param>
-		public static void ClearValue(string key)
+		public static void RemoveValue(string key)
 		{
-			ClearValue(GlobalSaveFileName, key);
+			RemoveValue(GlobalSaveFileName, key);
 		}
 
 		/// <summary>
@@ -362,10 +378,18 @@ namespace FM.Runtime.Core.DataManagement
 		/// </summary>
 		/// <param name="fileID">ID of the file</param>
 		/// <param name="key">ID of the value to remove</param>
-		public static void ClearValue(string fileID, string key)
+		public static void RemoveValue(string fileID, string key)
 		{
 			var dataKey = new DataKey(fileID, key);
 			_savedData.Remove(dataKey);
+		}
+
+		/// <summary>
+		/// Clear the content of the runtime data
+		/// </summary>
+		public static void ClearValues()
+		{
+			_savedData.Clear();
 		}
 
 		#endregion
@@ -400,9 +424,12 @@ namespace FM.Runtime.Core.DataManagement
 		/// </summary>
 		/// <param name="fileName">Name of the file to get the path for</param>
 		/// <returns>Path of the file</returns>
-		private static string BuildPath(string fileName)
+		private static string BuildPath(string fileName, out string directory)
 		{
-			return Path.Combine(persistentDataFilePath, fileName + SaveFileExtension);
+			string file = fileName + SaveFileExtension;
+			directory = Path.Combine(_persistentDataFilePath, DataPath, UserSlot);
+			string path = Path.Combine(directory, file);
+			return path;
 		}
 
 		#endregion

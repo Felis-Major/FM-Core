@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace FM.Runtime.Helpers.Coroutines
+namespace FM.Runtime.Core.Coroutines
 {
     /// <summary>
     /// Extension Methods for Coroutines
@@ -17,7 +17,10 @@ namespace FM.Runtime.Helpers.Coroutines
         public static void StartCoroutine(this MonoBehaviour monoBehaviour, ref Coroutine thread, IEnumerator coroutine)
         {
             if (thread != null)
+            {
                 monoBehaviour.StopCoroutine(thread);
+            }
+
             thread = monoBehaviour.StartCoroutine(coroutine);
         }
 
