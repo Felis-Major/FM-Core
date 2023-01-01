@@ -52,7 +52,10 @@ public class ImageReference : MonoBehaviour
             DestroyImmediate(imageReferencesComponents[i]);
         }
 
-        Debug.Log($"Removed {imageReferencesComponents.Length} Image Reference components");
+        if (imageReferencesComponents.Length > 0)
+        {
+            Debug.Log($"Removed {imageReferencesComponents.Length} Image Reference components");
+        }
     }
 #endif
 }
