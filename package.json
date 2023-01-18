@@ -1,12 +1,13 @@
 {
   "name": "com.felismajor.core",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "displayName": "FM Core",
   "description": "Core Unity helpers library",
   "unity": "2021.3",
   "unityRelease": "0b5",
   "dependencies": {
-	"com.unity.nuget.newtonsoft-json": "3.0.2"
+	"com.unity.nuget.newtonsoft-json": "3.0.2",
+	"com.unity.addressables": "1.19.19"
   },
   "author": {
     "name": "Felis Major",

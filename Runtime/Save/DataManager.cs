@@ -11,6 +11,12 @@ using UnityEngine;
 
 namespace FM.Runtime.Core.DataManagement
 {
+	public class AddressableItem
+	{
+		public string tag;
+		public string name;
+	}
+
 	/// <summary>
 	/// Handles saving/loading data at runtime
 	/// </summary>
