@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -9,7 +10,7 @@ namespace FM.Runtime.Core.DataManagement
 	{
 		private static Dictionary<string, UnityEngine.Object[]> _addressableDatabase = new();
 
-		public static async void InitializeTag(string tag)
+		public static async Task InitializeTag(string tag)
 		{
 			if (!_addressableDatabase.ContainsKey(tag))
 			{
