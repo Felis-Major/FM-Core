@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace FM.Runtime.Core.DataManagement
 {
-	[Serializable]
-	public struct AddressableInfo
-	{
-		public string tag;
-		public string name;
-	}
-
 	public static class AddressableDatabaseManager
 	{
 		private static Dictionary<string, UnityEngine.Object[]> _addressableDatabase = new();
@@ -40,11 +32,11 @@ namespace FM.Runtime.Core.DataManagement
 
 		public static bool TryGetItem<T>(AddressableInfo addressableInfo, out T item) where T : UnityEngine.Object
 		{
-			if (_addressableDatabase.TryGetValue(addressableInfo.tag, out UnityEngine.Object[] objects))
+			if (_addressableDatabase.TryGetValue(addressableInfo.Tag, out UnityEngine.Object[] objects))
 			{
 				foreach (UnityEngine.Object v in objects)
 				{
-					if (v.name == addressableInfo.name)
+					if (v.name == addressableInfo.Name)
 					{
 						item = (T)v;
 						return true;
