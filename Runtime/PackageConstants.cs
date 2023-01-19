@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Constants used by this package
 	/// </summary>
-	internal class PackageConstants
+	public class PackageConstants
 	{
 		/* ==========================
 		 * > Constants
