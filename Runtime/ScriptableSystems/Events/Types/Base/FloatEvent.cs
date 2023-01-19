@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.Systems.Events
 {
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    [CreateAssetMenu(fileName = "New Float Event", menuName = MENU_PATH_BASE + "C#/Float")]
-    public class FloatEvent : GenericScriptableEvent<float> { }
+	/// <summary>
+	/// <inheritdoc/>
+	/// </summary>
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.EventSystemPath + "/C#/" + nameof(FloatEvent), fileName = "New " + nameof(FloatEvent))]
+	public class FloatEvent : GenericScriptableEvent<float> { }
 }

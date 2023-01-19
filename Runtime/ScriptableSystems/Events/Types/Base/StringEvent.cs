@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.Systems.Events
 {
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    [CreateAssetMenu(fileName = " New String Event", menuName = MENU_PATH_BASE + "C#/String")]
-    public class StringEvent : GenericScriptableEvent<string> { }
+	/// <summary>
+	/// <inheritdoc/>
+	/// </summary>
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.EventSystemPath + "/C#/" + nameof(StringEvent), fileName = "New " + nameof(StringEvent))]
+	public class StringEvent : GenericScriptableEvent<string> { }
 }

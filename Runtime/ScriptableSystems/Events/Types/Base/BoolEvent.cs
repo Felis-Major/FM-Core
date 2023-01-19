@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.Systems.Events
 {
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    [CreateAssetMenu(fileName = "New Bool Event", menuName = MENU_PATH_BASE + "C#/Bool")]
+    [CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.EventSystemPath + "/C#/" + nameof(BoolEvent), fileName = "New " + nameof(BoolEvent))]
     public class BoolEvent : GenericScriptableEvent<bool> { }
 }

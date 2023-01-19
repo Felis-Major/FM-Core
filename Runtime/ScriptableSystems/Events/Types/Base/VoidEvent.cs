@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.Systems.Events
 {
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    [CreateAssetMenu(fileName = "New Void Event", menuName = MENU_PATH_BASE + "C#/Void")]
-    public class VoidEvent : ScriptableEvent { }
+	/// <summary>
+	/// <inheritdoc/>
+	/// </summary>
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.EventSystemPath + "/C#/" + nameof(VoidEvent), fileName = "New " + nameof(VoidEvent))]
+	public class VoidEvent : ScriptableEvent { }
 }

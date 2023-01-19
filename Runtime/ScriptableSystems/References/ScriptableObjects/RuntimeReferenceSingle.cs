@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.References
 {
 	/// <summary>
 	/// Single reference to an object at runtime
 	/// </summary>
-	[CreateAssetMenu(menuName = "Felis Major/References/Runtime Reference Single")]
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.ReferenceSystemPath + "/" + nameof(RuntimeReferenceSingle), fileName = "New " + nameof(RuntimeReferenceSingle))]
 	public class RuntimeReferenceSingle : RuntimeReference
 	{
 		/* ==========================

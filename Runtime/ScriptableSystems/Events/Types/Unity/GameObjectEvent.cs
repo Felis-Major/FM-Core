@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.Systems.Events
 {
-    [CreateAssetMenu(fileName = "New GameObject Event", menuName = MENU_PATH_BASE + "Unity/GameObject")]
-    public class GameObjectEvent : GenericScriptableEvent<GameObject> { }
+	/// <summary>
+	/// <inheritdoc/>
+	/// </summary>
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.EventSystemPath + "/Unity/" + nameof(GameObjectEvent), fileName = "New " + nameof(GameObjectEvent))]
+	public class GameObjectEvent : GenericScriptableEvent<GameObject> { }
 }

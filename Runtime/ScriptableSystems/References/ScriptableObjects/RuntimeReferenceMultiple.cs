@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FM.Runtime.Core;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace FM.Runtime.References
 {
 	/// <summary>
 	/// Object updated at runtime with a list of linked objects
 	/// </summary>
-	[CreateAssetMenu(menuName = "Felis Major/References/Runtime Reference Multiple")]
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.ReferenceSystemPath + "/" + nameof(RuntimeReferenceMultiple), fileName = "New " + nameof(RuntimeReferenceMultiple))]
 	public class RuntimeReferenceMultiple : RuntimeReference, IEnumerable<GameObject>
 	{
 		/* ==========================

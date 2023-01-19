@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using FM.Runtime.Core;
+using UnityEngine;
 
 namespace FM.Runtime.Systems.Events
 {
-    [CreateAssetMenu(fileName = " New Vector2 Event", menuName = MENU_PATH_BASE + "Unity/Vector 2")]
-    public class Vector2Event : GenericScriptableEvent<Vector2> { }
+	/// <summary>
+	/// <inheritdoc/>
+	/// </summary>
+	[CreateAssetMenu(menuName = PackageConstants.BasePath + "/" + PackageConstants.EventSystemPath + "/Unity/" + nameof(Vector2Event), fileName = "New " + nameof(Vector2Event))]
+	public class Vector2Event : GenericScriptableEvent<Vector2> { }
 }
