@@ -1,6 +1,6 @@
 {
   "name": "com.felismajor.core",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "displayName": "FM Core",
   "description": "Core Unity helpers library",
   "unity": "2021.3",
