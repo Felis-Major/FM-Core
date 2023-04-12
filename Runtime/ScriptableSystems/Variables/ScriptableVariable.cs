@@ -16,17 +16,15 @@ namespace FM.Runtime.Systems.Variables
 		/// <summary>
 		/// Value of the variable
 		/// </summary>
-#if UNITY_EDITOR
-		public T Value => _isOverrideValueEnabled ? _overrideValue : _value;
-#else
-	public T Value => _value;
-#endif
+		public T Value
+		{
+			get => _isOverrideValueEnabled ? _overrideValue : _value;
+			set => _value = value;
+		}
 
 		[SerializeField]
 		[Tooltip("Value of the variable")]
 		private T _value;
-
-#if UNITY_EDITOR
 
 		[SerializeField]
 		[Tooltip("Should the override value be used?")]
@@ -35,7 +33,5 @@ namespace FM.Runtime.Systems.Variables
 		[SerializeField]
 		[Tooltip("Fixed value to be used instead")]
 		private T _overrideValue;
-
-#endif
 	}
 }
