@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace FM.Runtime.Systems.Variables
@@ -22,7 +23,7 @@ namespace FM.Runtime.Systems.Variables
 			set => _value = value;
 		}
 
-		[SerializeField]
+		[NonSerialized]
 		[Tooltip("Value of the variable")]
 		private T _value;
 

@@ -13,12 +13,6 @@ public class ScriptableVariableEditor : Editor
 	{
 		var rootElement = new VisualElement();
 
-		// Value field
-		SerializedProperty propValue = serializedObject.FindProperty("_value");
-		var propValueField = new PropertyField(propValue);
-		propValueField.SetEnabled(false);
-		rootElement.Add(propValueField);
-
 		SerializedProperty propDefaultValue = serializedObject.FindProperty("_defaultValue");
 		var propDefaultValueField = new PropertyField(propDefaultValue);
 		rootElement.Add(propDefaultValueField);
