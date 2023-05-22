@@ -33,5 +33,13 @@ namespace FM.Runtime.Systems.Variables
 		[SerializeField]
 		[Tooltip("Fixed value to be used instead")]
 		private T _overrideValue;
+
+		[SerializeField]
+		private T _defaultValue;
+
+		private void Awake()
+		{
+			_value = _defaultValue;
+		}
 	}
 }

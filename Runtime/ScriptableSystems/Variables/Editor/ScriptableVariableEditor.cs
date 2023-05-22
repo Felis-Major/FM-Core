@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using FM.Runtime.Systems.Variables;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 [CustomEditor(typeof(ScriptableVariable), editorForChildClasses: true)]
@@ -21,6 +18,10 @@ public class ScriptableVariableEditor : Editor
 		var propValueField = new PropertyField(propValue);
 		propValueField.SetEnabled(false);
 		rootElement.Add(propValueField);
+
+		SerializedProperty propDefaultValue = serializedObject.FindProperty("_defaultValue");
+		var propDefaultValueField = new PropertyField(propDefaultValue);
+		rootElement.Add(propDefaultValueField);
 
 		// Enable override field
 		SerializedProperty propEnableOverride = serializedObject.FindProperty("_isOverrideValueEnabled");
