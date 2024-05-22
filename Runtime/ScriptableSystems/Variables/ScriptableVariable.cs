@@ -41,7 +41,7 @@ namespace FM.Runtime.Systems.Variables
 		private void Awake()
 		{
 			_value = _defaultValue;
-			hideFlags = HideFlags.HideAndDontSave;
+			// hideFlags = HideFlags.HideAndDontSave;
 		}
 	}
 }
