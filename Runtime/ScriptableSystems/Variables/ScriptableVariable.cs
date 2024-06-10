@@ -5,8 +5,18 @@ namespace FM.Runtime.Systems.Variables
 {
 	public abstract class ScriptableVariable : ScriptableObject
 	{
+ 		private static List<ScriptableVariable> _instances = new();
+	
+ 		private void OnEnable()
+   		{
+     			_instances.Add(this);
+   		}
 
-	}
+		private void OnDisable()
+  		{
+			_instances.Remove(this);
+		}
+ 	}
 
 	/// <summary>
 	/// Holds data in a scriptable object
