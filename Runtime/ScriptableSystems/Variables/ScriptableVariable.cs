@@ -31,7 +31,11 @@ namespace FM.Runtime.Systems.Variables
 		public T Value
 		{
 			get => _isOverrideValueEnabled ? _overrideValue : _value;
-			set => _value = value;
+			set 
+   			{
+      				_value = value;
+				ValueUpdated(value);
+   			}
 		}
 
 		[NonSerialized]
@@ -48,6 +52,8 @@ namespace FM.Runtime.Systems.Variables
 
 		[SerializeField]
 		private T _defaultValue;
+
+		public event Action<T> ValueUpdated = delegate { };
 
 		private void Awake()
 		{
